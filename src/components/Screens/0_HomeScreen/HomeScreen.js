@@ -1,10 +1,14 @@
-import React from 'react'
+import React from 'react';
 import './HomeScreen.css';
+import NavBar from '../../Common/NavigationBar/NavBar';
 
 function HomeScreen() {
   return (
-    <div className="temporary-class">
-      <h1>HomeScreen</h1>
+    <div>
+      <NavBar />
+      <div className="temporary-class">
+        <h1>HomeScreen</h1>
+      </div>
     </div>
   );
 }

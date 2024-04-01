@@ -1,0 +1,48 @@
+.progress-navigation {
+    display: flex;
+    align-items: center;
+  }
+  
+  .step {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    border: 6px solid #ccc;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .step.active {
+    background-color: #BF8DFF;
+    border-color: #BF8DFF;
+    color: black;
+  }
+  
+  .line {
+    flex: 1;
+    height: 6px;
+    background-color: #ccc;
+  }
+  
+  .step-text {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    text-align: center;
+    width: 80px;
+  }
+  
+  .active-line {
+    background-color: #BF8DFF;
+  }
+  
+  .button-container {
+    margin-top: 20px;
+  }
+  
