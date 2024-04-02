@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './NavBar.css'; // Import CSS file for styling
+import './NavigationBar.css'; // Import CSS file for styling
 
 const ProgressNavigation = ({ steps, currentStep }) => {
   return (

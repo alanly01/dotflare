@@ -1,6 +1,6 @@
 import React from 'react';
 import './HomeScreen.css';
-import NavBar from '../../Common/NavigationBar/NavBar';
+import NavBar from '../../Common/NavigationBar/NavigationBar';
 
 function HomeScreen() {
   return (
