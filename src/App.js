@@ -7,6 +7,10 @@ import ViewScreen from './components/Screens/3_ViewScreen/ViewScreen';
 import FeedbackScreen from './components/Screens/4_FeedbackScreen/FeedbackScreen';
 import ResultsScreen from './components/Screens/5_ResultsScreen/ResultsScreen';
 
+// This is imported for testing purposes
+import { createSession, joinSession, addImages, getImages, addCategories, getCategories, addFeedback, getFeedback } from "./backend/FirebaseAPICalls/FirebaseAPI"
+
+
 /**
  * Sender Interaction Flow
  * 
@@ -201,6 +205,7 @@ function App() {
 
   return (
     <div>
+      <button onClick={() => {console.log(getFeedback(111111, 222222, 1))}}>Test FirebaseAPI Call</button>
       <HomeScreen />
       <UploadScreen />
       <CategoryScreen />

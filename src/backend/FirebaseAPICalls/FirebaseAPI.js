@@ -2,7 +2,7 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import 'firebase/compat/storage';
-import firebaseConfig from "./FirebaseConfig";
+import firebaseConfig from "../FirebaseDocuments/FirebaseConfig";
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.firestore();
@@ -21,7 +21,8 @@ async function isTokenUnique(token) {
 // return: a random six digit token
 async function getUniqueToken() {
   var token = Math.floor(100000 + Math.random() * 900000);
-  while (!(await isTokenUnique(token))) { // This is quite inefficient, but will suffice for small scale
+  // This is quite inefficient, but will suffice for a small scale demo
+  while (!(await isTokenUnique(token))) {
     token = Math.floor(100000 + Math.random() * 900000);
   }
   return token
@@ -32,7 +33,7 @@ async function getUniqueToken() {
 // tokenPair: is cooresponding token to the sessionToken
 // isSender: true if sessionToken is for sender and false if it is for receiver
 // return: data for given sessionToken
-function getTokenData(sessionToken, tokenPair, isSender) {
+function getInitialSessionTokenData(sessionToken, tokenPair, isSender) {
   if (isSender) {
     return {
       isSender: true,
@@ -58,89 +59,92 @@ async function createSession() {
 
   const senderToken = 111111
   const receiverToken = 222222
+  const sessionToken = `${senderToken}_${receiverToken}`;
 
-  const senderData = getTokenData(senderToken, receiverToken, true);
-  const receiverData = getTokenData(receiverToken, senderToken, false);
+  const senderTokenRef = db.collection('sessionTokens').doc(`${senderToken}`);
+  const receiverTokenRef = db.collection('sessionTokens').doc(`${receiverToken}`);
+  const sessionDataDocRef = db.collection('dataDocs').doc(sessionToken);
+  const sessionFeedbackRef = db.collection('feedback').doc(sessionToken);
+
+  const senderTokenData = getInitialSessionTokenData(senderToken, receiverToken, true);
+  const receiverTokenData = getInitialSessionTokenData(receiverToken, senderToken, false);
+  const sessionDataDocData = {numImgs: 0, categories: []}
+  const sessionFeedbackData = {}
 
   try {
     await db.runTransaction(async (transaction) => {
-      const senderTokenRef = db.collection('sessionTokens').doc(senderToken.toString());
-      const receiverTokenRef = db.collection('sessionTokens').doc(receiverToken.toString());
-
-      const senderDoc = await transaction.get(senderTokenRef);
-      const receiverDoc = await transaction.get(receiverTokenRef);
-
-      if (!senderDoc.exists && !receiverDoc.exists) {
-        transaction.set(senderTokenRef, senderData);
-        transaction.set(receiverTokenRef, receiverData);
-        console.log('Session tokens added to Firestore atomically:', senderData, receiverData);
-      } else {
-        throw new Error('Session tokens already exist in Firestore');
-      }
+      transaction.set(senderTokenRef, senderTokenData);
+      transaction.set(receiverTokenRef, receiverTokenData);
+      transaction.set(sessionDataDocRef, sessionDataDocData);
+      transaction.set(sessionFeedbackRef, sessionFeedbackData);
     });
+    console.log('Session data added to Firestore atomically:', senderTokenData, receiverTokenData);
   } catch (error) {
-    console.error('Error adding session tokens to Firestore:', error);
+    console.error('Error adding session data to Firestore:', error);
     return null
   }
 
   return [senderToken, receiverToken]
 }
 
-// THIS FUNCTION IS NOT COMPLETE FOR NOW, BUT THIS IS ALL WE NEED FOR THE MOMENT
 // Gets the session data based on given session token
 // sessionToken: the token to get the session data from
-// return: 1 for sender tokens, 0 for receiver tokens, and -1 for invalid token or error
+// return: session token data on success and null on failure
 async function joinSession(sessionToken) {
-  const sessionTokenRef = db.collection('sessionTokens').doc(sessionToken.toString());
+  const sessionTokenRef = db.collection('sessionTokens').doc(`${sessionToken}`);
 
   try {
     const doc = await sessionTokenRef.get();
     if (doc.exists) {
       const data = doc.data();
       console.log('Session token data:', data);
-      return (data.isSender) ? 1 : 0 // THIS NEEDS TO BE CHANGED TO RETURN FULL DATA
+      return data
     } else {
       console.log('Session token not found in Firestore');
-      return -1;
+      return null;
     }
   } catch (error) {
     console.error('Error getting session token data from Firestore:', error);
-    return -1;
+    return null;
   }
 }
 
-
-// Adds the list of images and numImgs to the current session in Firebase
+// Adds the list of images and updates session state in Firebase
 // senderToken: the session token of the sender
 // receiverToken: the session token of the receiver
 // imageList: a list of image files to upload
 // return: true on success and false on failure
 async function addImages(senderToken, receiverToken, imageList) {
-  const sessionDataToken = `${senderToken}_${receiverToken}`;
-  const sessionDataDocRef = db.collection('dataDocs').doc(sessionDataToken);
+  const sessionToken = `${senderToken}_${receiverToken}`;
   const storageRef = firebase.storage().ref();
 
   try {
     await Promise.all(imageList.map(async (imageFile, index) => {
-      const imagePath = `${sessionDataToken}/img${index}`;
+      const imagePath = `${sessionToken}/img${index}`;
       const imageRef = storageRef.child(imagePath);
       await imageRef.put(imageFile);
     }));
-
     console.log('Images uploaded to Firebase Storage successfully.');
   } catch (error) {
     console.error('Error uploading images to Firebase Storage:', error);
     return false;
   }
 
+  const senderTokenRef = db.collection('sessionTokens').doc(`${senderToken}`);
+  const sessionDataDocRef = db.collection('dataDocs').doc(sessionToken);
+
+  const senderTokenData = {uploadedImages: true}
+  const sessionDataDocData = {numImgs: imageList.length}
+
   try {
-    await sessionDataDocRef.update({
-      numImgs: imageList.length
-    })
-    console.log('numImgs added to Firestore successfully');
+    await db.runTransaction(async (transaction) => {
+      transaction.update(senderTokenRef, senderTokenData);
+      transaction.update(sessionDataDocRef, sessionDataDocData);
+    });
+    console.log('Session state updated in Firestore successfully.');
     return true;
   } catch (error) {
-    console.error('Error adding numImgs to Firestore: ', error);
+    console.error('Error updating session state Firestore: ', error);
     return false;
   }
 }
@@ -150,8 +154,8 @@ async function addImages(senderToken, receiverToken, imageList) {
 // receiverToken: the session token of the receiver
 // return: a list of image urls on success and null on failure
 async function getImages(senderToken, receiverToken) {
-  const sessionDataToken = `${senderToken}_${receiverToken}`;
-  const sessionDataDocRef = db.collection('dataDocs').doc(sessionDataToken);
+  const sessionToken = `${senderToken}_${receiverToken}`;
+  const sessionDataDocRef = db.collection('dataDocs').doc(sessionToken);
   const storageRef = firebase.storage().ref();
   const imageList = [];
 
@@ -163,13 +167,8 @@ async function getImages(senderToken, receiverToken) {
     }
     
     const numImgs = doc.data().numImgs;
-    if (numImgs === undefined) {
-      console.error('numImgs field not found');
-      return null;
-    }
-
     for (let i = 0; i < numImgs; i++) {
-      const imagePath = `${sessionDataToken}/img${i}`;
+      const imagePath = `${sessionToken}/img${i}`;
       const imageRef = storageRef.child(imagePath);
       const imageUrl = await imageRef.getDownloadURL();
       imageList.push(imageUrl);
@@ -183,20 +182,29 @@ async function getImages(senderToken, receiverToken) {
   }
 }
 
-// Adds the list of categories to the current session in Firebase
+// Adds the list of categories and updates session state in Firebase
 // senderToken: the session token of the sender
 // receiverToken: the session token of the receiver
 // categoryList: a list of strings with each representing a category name
 // return: true on success and false on failure
 async function addCategories(senderToken, receiverToken, categoryList) {
-  const sessionDataToken = `${senderToken}_${receiverToken}`;
-  const sessionDataDocRef = db.collection('dataDocs').doc(sessionDataToken);
+  const sessionToken = `${senderToken}_${receiverToken}`;
+
+  const senderTokenRef = db.collection('sessionTokens').doc(`${senderToken}`);
+  const receiverTokenRef = db.collection('sessionTokens').doc(`${receiverToken}`);
+  const sessionDataDocRef = db.collection('dataDocs').doc(sessionToken);
+
+  const senderTokenData = {selectedCategories: true}
+  const receiverTokenData = {isVisible: true}
+  const sessionDataDocData = {categories: categoryList}
 
   try {
-    await sessionDataDocRef.update({
-      categories: categoryList
-    })
-    console.log('categories added to Firestore successfully');
+    await db.runTransaction(async (transaction) => {
+      transaction.update(senderTokenRef, senderTokenData);
+      transaction.update(receiverTokenRef, receiverTokenData);
+      transaction.update(sessionDataDocRef, sessionDataDocData);
+    });
+    console.log('Categories added to Firestore successfully');
     return true;
   } catch (error) {
     console.error('Error adding categories to Firestore: ', error);
@@ -209,14 +217,14 @@ async function addCategories(senderToken, receiverToken, categoryList) {
 // receiverToken: the session token of the receiver
 // return: a list of strings with each representing a category name on success and null on failure
 async function getCategories(senderToken, receiverToken) {
-  const sessionDataToken = `${senderToken}_${receiverToken}`;
-  const sessionDataDocRef = db.collection('dataDocs').doc(sessionDataToken);
+  const sessionToken = `${senderToken}_${receiverToken}`;
+  const sessionDataDocRef = db.collection('dataDocs').doc(sessionToken);
 
   try {
     const doc = await sessionDataDocRef.get();
     if (doc.exists) {
       const categories = doc.data().categories;
-      console.log('categories retrieved from Firestore:', categories);
+      console.log('Categories retrieved from Firestore:', categories);
       return categories;
     } else {
       console.log('No categories found in Firestore');
@@ -243,14 +251,12 @@ async function getCategories(senderToken, receiverToken) {
 // category: the index of the category the feedback is related to as an integer
 // return: true on success and false on failure
 async function addFeedback(senderToken, receiverToken, imgIndex, x, y, name, element, description, effect, sentiment, category) {
-  const sessionDataToken = `${senderToken}_${receiverToken}`;
-  const feedbackRef = db.collection('feedback').doc(sessionDataToken);
+  const sessionToken = `${senderToken}_${receiverToken}`;
+  const sessionFeedbackRef = db.collection('feedback').doc(sessionToken);
 
   try {
-    const doc = await feedbackRef.get();
-    let feedbackData = doc.exists ? doc.data() : {};
-
-    const imgData = feedbackData[`img${imgIndex}`] || { numDots: 0 };
+    const sessionFeedbackData = (await sessionFeedbackRef.get()).data();
+    const imgFeedbackData = sessionFeedbackData[`img${imgIndex}`] || { numDots: 0 };
 
     const dotData = {
       x: x,
@@ -262,12 +268,12 @@ async function addFeedback(senderToken, receiverToken, imgIndex, x, y, name, ele
       sentiment: sentiment,
       category: category
     }
-    imgData[`dot${imgData.numDots}`] = dotData;
-    imgData.numDots++;
 
-    feedbackData[`img${imgIndex}`] = imgData;
+    imgFeedbackData[`dot${imgFeedbackData.numDots}`] = dotData;
+    imgFeedbackData.numDots++;
 
-    await feedbackRef.set(feedbackData);
+    sessionFeedbackData[`img${imgIndex}`] = imgFeedbackData;
+    await sessionFeedbackRef.update(sessionFeedbackData);
 
     console.log('Feedback added to Firestore successfully');
     return true;
@@ -283,8 +289,8 @@ async function addFeedback(senderToken, receiverToken, imgIndex, x, y, name, ele
 // imgIndex: the index of the image being given feedback
 // return: a list of dot objects on success and null on failure
 async function getFeedback(senderToken, receiverToken, imgIndex) {
-  const sessionDataToken = `${senderToken}_${receiverToken}`;
-  const imageDocRef = db.collection('feedback').doc(sessionDataToken);
+  const sessionToken = `${senderToken}_${receiverToken}`;
+  const imageDocRef = db.collection('feedback').doc(sessionToken);
 
   try {
     const doc = await imageDocRef.get();
