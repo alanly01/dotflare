@@ -6,6 +6,7 @@ import CategoryScreen from './components/Screens/2_CategoryScreen/CategoryScreen
 import ViewScreen from './components/Screens/3_ViewScreen/ViewScreen';
 import FeedbackScreen from './components/Screens/4_FeedbackScreen/FeedbackScreen';
 import ResultsScreen from './components/Screens/5_ResultsScreen/ResultsScreen';
+import ProgressNavigation from './components/Common/NavigationBar/NavigationBar.js';
 
 // This is imported for testing purposes
 import { createSession, joinSession, addImages, getImages, addCategories, getCategories, addFeedback, getFeedback } from "./backend/FirebaseAPICalls/FirebaseAPI"
@@ -179,6 +180,7 @@ function App() {
   // Sender Screens: 0 1 2 3 5
   // Receiver Screens: 0 3 4 5
   const [currentScreenIndex, setCurrentScreenIndex] = useState(0);
+  const [currentRole, setCurrentRole] = useState('Sender');
 
   // Set on HomeScreen, can be used anywhere
   const [tokenInfo, setTokenInfo] = useState();
@@ -202,16 +204,53 @@ function App() {
   // Local storage of Firebase data
   const [images, setImages] = useState();
   const [dotFeedback, setDotFeedback] = useState();
+  
+  const navigateToScreen = (screenIndex) => {
+    setCurrentScreenIndex(screenIndex);
+  };
+
+  const handlePrev = () => {
+    setCurrentScreenIndex(currentScreenIndex - 1);
+  };
+
+  const handleNext = () => {
+    setCurrentScreenIndex(currentScreenIndex + 1);
+  };
+  
+  const senderSteps = ['Home', 'Upload', 'Category', 'View', 'Results'];
+  const receiverSteps = ['Home', 'View', 'Feedback', 'Results'];
+
+  const steps = currentRole === 'Sender' ? senderSteps : receiverSteps;
+  const currentStep = currentScreenIndex;
+
+  const renderScreen = () => {
+    switch (currentScreenIndex) {
+      case 0:
+        return <HomeScreen navigateToScreen={navigateToScreen} />;
+      case 1:
+        return <UploadScreen navigateToScreen={navigateToScreen} />;
+      case 2:
+        return <CategoryScreen navigateToScreen={navigateToScreen} />;
+      case 3:
+        return <ViewScreen navigateToScreen={navigateToScreen} />;
+      case 4:
+        return currentRole === 'Sender' ? <ResultsScreen navigateToScreen={navigateToScreen} /> : <FeedbackScreen navigateToScreen={navigateToScreen} />;
+      case 5:
+        return <ResultsScreen navigateToScreen={navigateToScreen} />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div>
-      <button onClick={() => {console.log(getFeedback(111111, 222222, 1))}}>Test FirebaseAPI Call</button>
-      <HomeScreen />
-      <UploadScreen />
-      <CategoryScreen />
-      <ViewScreen />
-      <FeedbackScreen />
-      <ResultsScreen />
+      <ProgressNavigation steps={steps} currentStep={currentStep} setCurrentStep={setCurrentScreenIndex} />
+      
+      {renderScreen()}
+      <div className="button-container">
+        <button onClick={handlePrev} disabled={currentScreenIndex === 0}>Previous</button>
+        <button onClick={handleNext} disabled={currentScreenIndex === steps.length - 1}>Next</button>
+      </div>
     </div>
   );
 }

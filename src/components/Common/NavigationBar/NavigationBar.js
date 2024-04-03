@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './NavigationBar.css'; // Import CSS file for styling
 
-const ProgressNavigation = ({ steps, currentStep }) => {
+const ProgressNavigation = ({ steps, currentStep, setCurrentStep }) => {
+  // Ensure steps is defined before mapping
+  if (!steps || steps.length === 0) return null;
+
   return (
     <div className="progress-navigation">
       {steps.map((step, index) => (
@@ -21,21 +24,4 @@ const ProgressNavigation = ({ steps, currentStep }) => {
   );
 };
 
-
-const App = () => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const steps = ['Step 1', 'Step 2', 'Step 3', 'Step 4'];
-
-  return (
-    <div>
-      <ProgressNavigation steps={steps} currentStep={currentStep} />
-      <div className="button-container">
-        <button onClick={() => setCurrentStep(currentStep - 1)} disabled={currentStep === 0}>Previous</button>
-        <button onClick={() => setCurrentStep(currentStep + 1)} disabled={currentStep === steps.length - 1}>Next</button>
-      </div>
-    </div>
-  );
-};
-
-
-export default App;
+export default ProgressNavigation;
