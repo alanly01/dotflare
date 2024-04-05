@@ -8,6 +8,9 @@ import FeedbackScreen from './components/Screens/4_FeedbackScreen/FeedbackScreen
 import ResultsScreen from './components/Screens/5_ResultsScreen/ResultsScreen';
 import ProgressNavigation from './components/Common/NavigationBar/NavigationBar.js';
 
+import chevronLeftIcon from './images/chevron-left-solid.svg';
+import chevronRightIcon from './images/chevron-right-solid.svg';
+
 // This is imported for testing purposes
 import { createSession, joinSession, addImages, getImages, addCategories, getCategories, addFeedback, getFeedback } from "./backend/FirebaseAPICalls/FirebaseAPI"
 
@@ -217,11 +220,11 @@ function App() {
     setCurrentScreenIndex(currentScreenIndex + 1);
   };
   
-  const senderSteps = ['Home', 'Upload', 'Category', 'View', 'Results'];
-  const receiverSteps = ['Home', 'View', 'Feedback', 'Results'];
+  const senderSteps = ['Upload', 'Category', 'View', 'Results'];
+  const receiverSteps = ['View', 'Feedback', 'Results'];
 
   const steps = currentRole === 'Sender' ? senderSteps : receiverSteps;
-  const currentStep = currentScreenIndex;
+  const currentStep = currentScreenIndex - 1; // Adjust index to match steps array
 
   const renderScreen = () => {
     switch (currentScreenIndex) {
@@ -243,13 +246,21 @@ function App() {
   };
 
   return (
-    <div>
-      <ProgressNavigation steps={steps} currentStep={currentStep} setCurrentStep={setCurrentScreenIndex} />
-      
+    <div style={{ backgroundColor: '#1E1E1E' }}>
+      {currentScreenIndex !== 0 && (
+        <ProgressNavigation steps={steps} currentStep={currentStep} setCurrentStep={setCurrentScreenIndex} />
+      )}
+
       {renderScreen()}
       <div className="button-container">
-        <button onClick={handlePrev} disabled={currentScreenIndex === 0}>Previous</button>
-        <button onClick={handleNext} disabled={currentScreenIndex === steps.length - 1}>Next</button>
+        <button onClick={handlePrev} disabled={currentScreenIndex === 0}>
+          <img src={chevronLeftIcon} alt="Previous" />
+          Previous
+        </button>
+        <button onClick={handleNext} disabled={currentScreenIndex === steps.length}>
+          Next
+          <img src={chevronRightIcon} alt="Next" />
+        </button>
       </div>
     </div>
   );
