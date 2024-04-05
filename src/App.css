@@ -1,0 +1,32 @@
+.button-container {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 999;
+  }
+  
+  .button-container button {
+    background-color: transparent;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex; /* Align items horizontally */
+    align-items: center; /* Center items vertically */
+    transition: background-color 0.3s ease;
+  }
+  
+  .button-container button span {
+    margin-right: 5px; /* Adjust spacing between text and icon */
+  }
+  
+  .button-container button img {
+    width: 20px; /* Adjust as needed */
+    height: 20px; /* Adjust as needed */
+  }
+  
