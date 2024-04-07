@@ -284,7 +284,7 @@ function App() {
       case 2:
         return <CategoryScreen navigateToScreen={navigateToScreen} exitSession={exitSession} />;
       case 3:
-        return <ViewScreen navigateToScreen={navigateToScreen} exitSession={exitSession} />;
+        return <ViewScreen navigateToScreen={navigateToScreen} exitSession={exitSession} isSender={isSender}/>;
       case 4:
         return <FeedbackScreen navigateToScreen={navigateToScreen} />;
       case 5:

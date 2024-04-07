@@ -6,10 +6,24 @@ import eye from '../../../images/eye-solid.svg';
 import eyeSlash from '../../../images/eye-slash-solid.svg';
 import help from '../../../images/circle-question-regular.svg';
 import picture from '../../../images/picture.jpg';
+import NavigationButton from '../../Common/NavigationButton/NavigationButton';
 
-function ViewScreen() {
+function ViewScreen({ navigateToScreen, exitSession, isSender }) {
   const [imageList, setImageList] = useState(null);
   const [feedbackList, setFeedbackList] = useState(null);
+
+  const onBackClick = () => {
+    exitSession();
+  }
+
+  const onNextClick = async () => {
+    if (isSender) {
+      navigateToScreen(5, 3)
+    } else {
+      // THIS IS TEMPORARY FOR TESTING
+      navigateToScreen(4, 1)
+    }
+  }
 
   const fetchImages = async () => {
     setImageList(await getImages(111111, 222222));
@@ -72,6 +86,7 @@ return (
           <img src={isVisible ? eye : eyeSlash} alt="Toggle Eye" />
       </div>
     </div>
+    <NavigationButton backVisibility={true} nextVisibility={true} backText={"Home"} nextText={"Next"} backFunction={onBackClick} nextFunction={onNextClick}/>
   </div>
 );
 
