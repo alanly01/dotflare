@@ -10,16 +10,17 @@
 }
 
 .content {
-  width: 80%; 
-  max-width: 600px; 
+  width: calc(100vw - 30px); 
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .logo {
-  width: 100%; 
-  margin-bottom: 5px;
+  width: calc(100vw - 90px); 
+  height: calc((100vw - 90px) / 2);
+  object-fit: cover;
+  margin-bottom: 30px;
 }
 
 .search-bar-label {
@@ -39,4 +40,47 @@
   outline: none;
   border-radius: 10px 10px 10px 10px;
   margin-right: 5px;
+}
+
+.get-code-button {
+  background-color: #BF8DFF;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  margin-top: 15px;
+}
+
+.get-code-text {
+  color: #FFF;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.code-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.code-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 15px;
+}
+
+.code-label {
+  color: #FFF;
+  font-size: 15px;
+  line-height: 100%;
+}
+
+.code {
+  color: #FFF;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 100%;
+  font-family: monospace;
 }

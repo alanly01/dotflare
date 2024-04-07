@@ -2,7 +2,7 @@ import React from 'react';
 import './SearchBar.css';
 import SendButton from '../../Common/send_button.svg'; 
 
-const SearchBar = ({ labelText, placeholder, defaultValue }) => {
+const SearchBar = ({ labelText, placeholder, defaultValue, showButton }) => {
     return (
       <div className="search-bar-container">
         {labelText && <label htmlFor="search-input" className="search-bar-label">{labelText}</label>}
@@ -14,9 +14,14 @@ const SearchBar = ({ labelText, placeholder, defaultValue }) => {
             defaultValue={defaultValue}
             className="search-input"
           />
+          {showButton 
+          ? 
           <button className="search-button">
             <img src={SendButton} alt="Send" />
           </button>
+          :
+          null
+          }
         </div>
       </div>
     );

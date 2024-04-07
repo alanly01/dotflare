@@ -14,6 +14,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 // This is imported for testing purposes
 import { createSession, joinSession, addImages, getImages, addCategories, getCategories, addFeedback, getFeedback } from "./backend/FirebaseAPICalls/FirebaseAPI"
+import { toBeEmpty } from '@testing-library/jest-dom/dist/matchers.js';
 
 
 /**
@@ -188,8 +189,8 @@ function App() {
 
   // Set on HomeScreen, can be used anywhere
   const [tokenInfo, setTokenInfo] = useState();
-  const [senderToken, setSenderToken] = useState();
-  const [receiverToken, setReceiverToken] = useState();
+  const [senderToken, setSenderToken] = useState('------');
+  const [receiverToken, setReceiverToken] = useState('------');
   const [isSender, setIsSender] = useState();
   // No global state for UploadScreen, use FirebaseAPI or private state
   // No global state for CategoryScreen, use FirebaseAPI or private state
@@ -208,6 +209,12 @@ function App() {
   // Local storage of Firebase data
   const [images, setImages] = useState();
   const [dotFeedback, setDotFeedback] = useState();
+
+  const setSessionTokens = async () => {
+    const tokens = await createSession();
+    setSenderToken(tokens[0]);
+    setReceiverToken(tokens[1]);
+  }
   
   const navigateToScreen = (screenIndex) => {
     setCurrentScreenIndex(screenIndex);
@@ -230,7 +237,7 @@ function App() {
   const renderScreen = () => {
     switch (currentScreenIndex) {
       case 0:
-        return <HomeScreen navigateToScreen={navigateToScreen} />;
+        return <HomeScreen navigateToScreen={navigateToScreen} senderToken={senderToken} receiverToken={receiverToken} getSessionTokens={setSessionTokens}/>;
       case 1:
         return <UploadScreen navigateToScreen={navigateToScreen} />;
       case 2:
