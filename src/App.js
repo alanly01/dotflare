@@ -246,18 +246,28 @@ function App() {
       }
     }
   }
+
+  const exitSession = async () => {
+    setTokenInfo()
+    setSenderToken('------');
+    setReceiverToken('------');
+    setIsSender();
+    setClickPosX();
+    setClickPosY();
+    setCritiquerName();
+    setFormalElement();
+    setDescription();
+    setEffect();
+    setSentiment();
+    setCategoryIndex();
+    setImages();
+    setDotFeedback();
+    navigateToScreen(0, 0)
+  }
   
   const navigateToScreen = (screenIndex, navStep) => {
     setCurrentScreenIndex(screenIndex);
     setCurrentNavStep(navStep);
-  };
-
-  const handlePrev = () => {
-    setCurrentScreenIndex(currentScreenIndex - 1);
-  };
-
-  const handleNext = () => {
-    setCurrentScreenIndex(currentScreenIndex + 1);
   };
   
   const senderSteps = ['Upload', 'Category', 'View', 'Results'];
@@ -270,11 +280,11 @@ function App() {
       case 0:
         return <HomeScreen navigateToScreen={navigateToScreen} senderToken={senderToken} receiverToken={receiverToken} getSessionTokens={setSessionTokens} enterSession={enterSession}/>;
       case 1:
-        return <UploadScreen navigateToScreen={navigateToScreen} />;
+        return <UploadScreen navigateToScreen={navigateToScreen} exitSession={exitSession} senderToken={senderToken} receiverToken={receiverToken} />;
       case 2:
-        return <CategoryScreen navigateToScreen={navigateToScreen} />;
+        return <CategoryScreen navigateToScreen={navigateToScreen} exitSession={exitSession} />;
       case 3:
-        return <ViewScreen navigateToScreen={navigateToScreen} />;
+        return <ViewScreen navigateToScreen={navigateToScreen} exitSession={exitSession} />;
       case 4:
         return <FeedbackScreen navigateToScreen={navigateToScreen} />;
       case 5:

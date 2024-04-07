@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import './UploadScreen.css';
 import plusIcon from '../../../images/plus-solid.svg';
+import NavigationButton from '../../Common/NavigationButton/NavigationButton';
+import { addImages } from '../../../backend/FirebaseAPICalls/FirebaseAPI';
 
-function UploadScreen() {
+function UploadScreen({navigateToScreen, exitSession, senderToken, receiverToken }) {
   // State to store uploaded pictures
   const [pictures, setPictures] = useState([]);
 
@@ -13,10 +15,19 @@ function UploadScreen() {
   };
 
   // Function to handle button click and trigger file input
-  const handleButtonClick = () => {
+  const handleAddButtonClick = () => {
     const fileInput = document.getElementById("upload-input");
     fileInput.click();
   };
+
+  const onBackClick = () => {
+    exitSession();
+  }
+
+  const onNextClick = async () => {
+    await addImages(senderToken, receiverToken, pictures)
+    navigateToScreen(2, 1)
+  }
 
   return (
     <div className="upload-screen">
@@ -27,7 +38,7 @@ function UploadScreen() {
           </div>
         ))}
       </div>
-      <button className="upload-button" onClick={handleButtonClick}>
+      <button className="upload-button" onClick={handleAddButtonClick}>
         <img src={plusIcon} alt="Upload" />
       </button>
       <input
@@ -39,6 +50,7 @@ function UploadScreen() {
         id="upload-input"
       />
       <div className="bottom-bar"></div>
+      <NavigationButton backVisibility={true} nextVisibility={true} backText={"Home"} nextText={"Upload"} backFunction={onBackClick} nextFunction={onNextClick}/>
     </div>
   );
 }
