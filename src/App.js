@@ -10,6 +10,7 @@ import ProgressNavigation from './components/Common/NavigationBar/NavigationBar.
 
 import chevronLeftIcon from './images/chevron-left-solid.svg';
 import chevronRightIcon from './images/chevron-right-solid.svg';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 // This is imported for testing purposes
 import { createSession, joinSession, addImages, getImages, addCategories, getCategories, addFeedback, getFeedback } from "./backend/FirebaseAPICalls/FirebaseAPI"

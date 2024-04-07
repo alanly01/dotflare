@@ -32,6 +32,9 @@ return (
     <img src={picture} alt="Your Image" className="picture" />
     <p style={{color:'white'}}>Click on the dots to view feedback.</p>
     <div className="button-row">
+    <div className="icons">
+        <img src={help} alt="Help" />
+      </div>
     <div>
       {buttons.map(button => (
         <button
@@ -46,11 +49,6 @@ return (
 
       <div className="icons" onClick={toggleVisibility}>
         <img src={isVisible ? eye : eyeSlash} alt="Toggle Eye" />
-        <span>Toggle Dots</span>
-      </div>
-
-      <div className="icons">
-        <img src={help} alt="Help" />
       </div>
     </div>
   </div>
