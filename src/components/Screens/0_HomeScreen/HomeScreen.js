@@ -3,8 +3,20 @@ import './HomeScreen.css';
 import NavBar from '../../Common/NavigationBar/NavigationBar';
 import SearchBar from '../../Common/SearchBar/SearchBar'; 
 import Logo from '../../Common/logo.svg';
+import NavigationButton from '../../Common/NavigationButton/NavigationButton';
 
-function HomeScreen({senderToken, receiverToken, getSessionTokens }) {
+function HomeScreen({senderToken, receiverToken, getSessionTokens, enterSession }) {
+
+  const [searchBarText, setSearchBarText] = useState("000000")
+
+  const setTextState = (text) => {
+    setSearchBarText(text)
+  }
+
+  const onNextClick = () => {
+    enterSession(searchBarText);
+    console.log(searchBarText)
+  }
 
   return (
     <div className="homeScreen">
@@ -14,8 +26,8 @@ function HomeScreen({senderToken, receiverToken, getSessionTokens }) {
         <SearchBar
           labelText="Enter Project Code"
           placeholder="Enter code here"
-          defaultValue="000000"
           showButton={false}
+          setTextState={setTextState}
         />
         <button className="get-code-button" onClick={() => {getSessionTokens()}}>
           <div className="get-code-text">
@@ -41,6 +53,7 @@ function HomeScreen({senderToken, receiverToken, getSessionTokens }) {
         </div>
         </div>
       </div>
+      <NavigationButton backVisibility={false} nextVisibility={true} nextText={"Enter"} nextFunction={onNextClick}/>
     </div>
   );
 }

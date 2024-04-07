@@ -8,8 +8,6 @@ import FeedbackScreen from './components/Screens/4_FeedbackScreen/FeedbackScreen
 import ResultsScreen from './components/Screens/5_ResultsScreen/ResultsScreen';
 import ProgressNavigation from './components/Common/NavigationBar/NavigationBar.js';
 
-import chevronLeftIcon from './images/chevron-left-solid.svg';
-import chevronRightIcon from './images/chevron-right-solid.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // This is imported for testing purposes
@@ -185,7 +183,7 @@ function App() {
   // Sender Screens: 0 1 2 3 5
   // Receiver Screens: 0 3 4 5
   const [currentScreenIndex, setCurrentScreenIndex] = useState(0);
-  const [currentRole, setCurrentRole] = useState('Sender');
+  const [currentNavStep, setCurrentNavStep] = useState(0)
 
   // Set on HomeScreen, can be used anywhere
   const [tokenInfo, setTokenInfo] = useState();
@@ -215,9 +213,43 @@ function App() {
     setSenderToken(tokens[0]);
     setReceiverToken(tokens[1]);
   }
+
+  const enterSession = async (sessionToken) => {
+    const sessionData = await joinSession(sessionToken);
+    if (sessionData == null) {
+      return;
+    }
+
+    setTokenInfo(sessionData)
+    setIsSender(sessionData.isSender)
+    if (sessionData.isSender) {
+      setSenderToken(sessionToken)
+      setReceiverToken(sessionData.tokenPair)
+    } else {
+      if (sessionData.isVisible == true) {
+        setSenderToken(sessionData.tokenPair)
+      setReceiverToken(sessionToken)
+      }
+    }
+
+    if (sessionData.isSender) {
+      if (sessionData.uploadedImages == false) {
+        navigateToScreen(1, 0)
+      } else if (sessionData.selectedCategories == false) {
+        navigateToScreen(2, 1)
+      } else {
+        navigateToScreen(3, 2)
+      }
+    } else {
+      if (sessionData.isVisible == true) {
+        navigateToScreen(3, 0)
+      }
+    }
+  }
   
-  const navigateToScreen = (screenIndex) => {
+  const navigateToScreen = (screenIndex, navStep) => {
     setCurrentScreenIndex(screenIndex);
+    setCurrentNavStep(navStep);
   };
 
   const handlePrev = () => {
@@ -231,13 +263,12 @@ function App() {
   const senderSteps = ['Upload', 'Category', 'View', 'Results'];
   const receiverSteps = ['View', 'Feedback', 'Results'];
 
-  const steps = currentRole === 'Sender' ? senderSteps : receiverSteps;
-  const currentStep = currentScreenIndex - 1; // Adjust index to match steps array
+  const steps = isSender ? senderSteps : receiverSteps;
 
   const renderScreen = () => {
     switch (currentScreenIndex) {
       case 0:
-        return <HomeScreen navigateToScreen={navigateToScreen} senderToken={senderToken} receiverToken={receiverToken} getSessionTokens={setSessionTokens}/>;
+        return <HomeScreen navigateToScreen={navigateToScreen} senderToken={senderToken} receiverToken={receiverToken} getSessionTokens={setSessionTokens} enterSession={enterSession}/>;
       case 1:
         return <UploadScreen navigateToScreen={navigateToScreen} />;
       case 2:
@@ -245,7 +276,7 @@ function App() {
       case 3:
         return <ViewScreen navigateToScreen={navigateToScreen} />;
       case 4:
-        return currentRole === 'Sender' ? <ResultsScreen navigateToScreen={navigateToScreen} /> : <FeedbackScreen navigateToScreen={navigateToScreen} />;
+        return <FeedbackScreen navigateToScreen={navigateToScreen} />;
       case 5:
         return <ResultsScreen navigateToScreen={navigateToScreen} />;
       default:
@@ -256,20 +287,10 @@ function App() {
   return (
     <div style={{ backgroundColor: '#1E1E1E' }}>
       {currentScreenIndex !== 0 && (
-        <ProgressNavigation steps={steps} currentStep={currentStep} setCurrentStep={setCurrentScreenIndex} />
+        <ProgressNavigation steps={steps} currentStep={currentNavStep} setCurrentStep={setCurrentScreenIndex} />
       )}
 
       {renderScreen()}
-      <div className="button-container">
-        <button onClick={handlePrev} disabled={currentScreenIndex === 0}>
-          <img src={chevronLeftIcon} alt="Back" />
-          Back
-        </button>
-        <button onClick={handleNext} disabled={currentScreenIndex === steps.length}>
-          Next
-          <img src={chevronRightIcon} alt="Next" />
-        </button>
-      </div>
     </div>
   );
 }
