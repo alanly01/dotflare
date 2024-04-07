@@ -1,0 +1,4 @@
+/* Style for the image */
+.image {
+  width: calc(100vw - 60px);
+}

@@ -283,12 +283,11 @@ async function addFeedback(senderToken, receiverToken, imgIndex, x, y, name, ele
   }
 }
 
-// Gets all the feedback for the image from the current session in Firebase
+// Gets the feedback for all images from the current session in Firebase
 // senderToken: the session token of the sender
 // receiverToken: the session token of the receiver
-// imgIndex: the index of the image being given feedback
 // return: a list of dot objects on success and null on failure
-async function getFeedback(senderToken, receiverToken, imgIndex) {
+async function getFeedback(senderToken, receiverToken) {
   const sessionToken = `${senderToken}_${receiverToken}`;
   const imageDocRef = db.collection('feedback').doc(sessionToken);
 
@@ -299,25 +298,28 @@ async function getFeedback(senderToken, receiverToken, imgIndex) {
       return null;
     }
 
-    const imgData = doc.data()[`img${imgIndex}`];
-    if (!imgData || imgData.numDots === 0) {
-      console.log(`No dots found for image index ${imgIndex}`);
-      return [];
-    }
+    console.log('Feedback retrieved from Firestore:', doc.data());
+    return doc.data();
 
-    const dots = [];
-    for (let i = 0; i < imgData.numDots; i++) {
-      const dotKey = `dot${i}`;
-      const dotObject = imgData[dotKey];
-      if (dotObject) {
-        dots.push(dotObject);
-      } else {
-        console.error(`Dot object ${dotKey} not found in image data`);
-      }
-    }
+    // const imgData = doc.data()[`img${imgIndex}`];
+    // if (!imgData || imgData.numDots === 0) {
+    //   console.log(`No dots found for image index ${imgIndex}`);
+    //   return [];
+    // }
 
-    console.log('Feedback dots retrieved from Firestore:', dots);
-    return dots;
+    // const dots = [];
+    // for (let i = 0; i < imgData.numDots; i++) {
+    //   const dotKey = `dot${i}`;
+    //   const dotObject = imgData[dotKey];
+    //   if (dotObject) {
+    //     dots.push(dotObject);
+    //   } else {
+    //     console.error(`Dot object ${dotKey} not found in image data`);
+    //   }
+    // }
+
+    // console.log('Feedback dots retrieved from Firestore:', dots);
+    // return dots;
   } catch (error) {
     console.error('Error retrieving feedback dots from Firestore:', error);
     return null;
