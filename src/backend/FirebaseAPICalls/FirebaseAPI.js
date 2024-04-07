@@ -54,11 +54,11 @@ function getInitialSessionTokenData(sessionToken, tokenPair, isSender) {
 // return: the list [senderToken, receiverToken] on success and null on failure
 async function createSession() {
   // NOTE: FOR TESTING WE ARE USING SET KEYS INSTEAD
-  // const senderToken = await getUniqueToken()
-  // const receiverToken = await getUniqueToken()
+  const senderToken = await getUniqueToken()
+  const receiverToken = await getUniqueToken()
 
-  const senderToken = 111111
-  const receiverToken = 222222
+  // const senderToken = 111111
+  // const receiverToken = 222222
   const sessionToken = `${senderToken}_${receiverToken}`;
 
   const senderTokenRef = db.collection('sessionTokens').doc(`${senderToken}`);
