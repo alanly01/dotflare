@@ -1,6 +1,51 @@
+/* ViewScreen.css */
+
+/* Temporary class for positioning */
 .temporary-class {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  height: 100vh;
+}
+
+/* Style for the image */
+.picture {
+  height: calc(100vw - 30px);
+  width: calc(((100vw - 30px) / 4) * 3);
+  margin-top: 20px; /* Adjust margin as needed */
+}
+
+/* Style for the button row */
+.button-row {
+  /* display: flex; */
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* Style for individual buttons */
+.button-row button {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 25px;
+}
+
+/* Style for the eye toggle container */
+.icons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+/* Style for the eye toggle image */
+.icons img {
+  width: 35px; /* Adjust the size as needed */
+}
+
+/* Style for the text under the eye toggle */
+.icons span {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #666;
 }

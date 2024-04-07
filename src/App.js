@@ -254,8 +254,8 @@ function App() {
       {renderScreen()}
       <div className="button-container">
         <button onClick={handlePrev} disabled={currentScreenIndex === 0}>
-          <img src={chevronLeftIcon} alt="Previous" />
-          Previous
+          <img src={chevronLeftIcon} alt="Back" />
+          Back
         </button>
         <button onClick={handleNext} disabled={currentScreenIndex === steps.length}>
           Next
