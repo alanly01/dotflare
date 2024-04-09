@@ -284,6 +284,11 @@ function App() {
     setCurrentScreenIndex(screenIndex);
     setCurrentNavStep(navStep);
   };
+
+  const updateUserClickPosition = (xPercent, yPercent) => {
+    setClickPosX(xPercent);
+    setClickPosY(yPercent);
+  }
   
   const senderSteps = ['Upload', 'Category', 'View', 'Results'];
   const receiverSteps = ['View', 'Feedback', 'Results'];
@@ -319,7 +324,10 @@ function App() {
         dotFeedback={dotFeedback}
         fetchDotFeedback={fetchDotFeedback}
         categories={categories}
-        fetchCategories={fetchCategories}/>;
+        fetchCategories={fetchCategories}
+        clickPosX={clickPosX}
+        clickPosY={clickPosY}
+        updateUserClickPosition={updateUserClickPosition}/>;
       case 4:
         return <FeedbackScreen 
         navigateToScreen={navigateToScreen} 

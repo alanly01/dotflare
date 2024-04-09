@@ -9,7 +9,19 @@ import picture from '../../../images/picture.jpg';
 import NavigationButton from '../../Common/NavigationButton/NavigationButton';
 import FeedbackEntry from '../../Common/FeedbackEntry/FeedbackEntry';
 
-function ViewScreen({ navigateToScreen, exitSession, isSender, images, fetchImages, dotFeedback, fetchDotFeedback, categories, fetchCategories }) {
+function ViewScreen({ 
+  navigateToScreen, 
+  exitSession, 
+  isSender, 
+  images, 
+  fetchImages, 
+  dotFeedback, 
+  fetchDotFeedback, 
+  categories, 
+  fetchCategories, 
+  clickPosX, 
+  clickPosY, 
+  updateUserClickPosition }) {
 
   const onBackClick = () => {
     exitSession();
@@ -20,7 +32,7 @@ function ViewScreen({ navigateToScreen, exitSession, isSender, images, fetchImag
       navigateToScreen(5, 3)
     } else {
       // THIS IS TEMPORARY FOR TESTING
-      navigateToScreen(4, 1)
+      navigateToScreen(5, 2)
     }
   }
 
@@ -67,58 +79,60 @@ function ViewScreen({ navigateToScreen, exitSession, isSender, images, fetchImag
     setActiveDotIndex(dotIndex);
   }
 
-  
+  return (
+    <div className="view-screen">
+      {images != null && dotFeedback != null ? 
+      <FeedbackImage 
+        navigateToScreen={navigateToScreen}
+        image={images[imageIndex]} 
+        feedback={dotFeedback[`img${imageIndex}`]}
+        displayDotFeedback={displayDotFeedback}
+        isVisible={isVisible}
+        clickPosX={clickPosX}
+        clickPosY={clickPosY}
+        updateUserClickPosition={updateUserClickPosition}/>
+      : 
+      null
+      }
 
-return (
-  <div className="view-screen">
-    {images != null && dotFeedback != null ? 
-    <FeedbackImage 
-      image={images[imageIndex]} 
-      feedback={dotFeedback[`img${imageIndex}`]}
-      displayDotFeedback={displayDotFeedback}
-      isVisible={isVisible} />
-    : 
-    null
-    }
-
-    <div className='hint'>
-      Click on the dots to view feedback.
-    </div>
-    <div className="button-row">
-      <div className="icons">
-        <img src={help} alt="Help" />
+      <div className='hint'>
+        {isSender ? 'Click on the dots to view feedback.' : 'Click on the dots/image to view/add feedback.'}
       </div>
+      <div className="button-row">
+        <div className="icons">
+          <img src={help} alt="Help" />
+        </div>
+        <div>
+          {buttons.map(button => (
+            <button
+              key={button.id}
+              style={{ color: button.color,backgroundColor: 'transparent' }}
+              onClick={() => changeImage(button.id)}
+            >
+              {button.id}
+            </button>
+          ))}
+        </div>
+        <div className="icons" onClick={toggleVisibility}>
+            <img src={isVisible ? eye : eyeSlash} alt="Toggle Eye" />
+        </div>
+      </div>
+      {activeDotIndex != null && categories != null
+      ?
       <div>
-        {buttons.map(button => (
-          <button
-            key={button.id}
-            style={{ color: button.color,backgroundColor: 'transparent' }}
-            onClick={() => changeImage(button.id)}
-          >
-            {button.id}
-          </button>
-        ))}
+        <FeedbackEntry label="Sentiment" text={dotFeedback[`img${imageIndex}`][`dot${activeDotIndex}`]['sentiment'] ? 'Positive' : 'Negative'} />
+        <FeedbackEntry label="Category" text={categories[dotFeedback[`img${imageIndex}`][`dot${activeDotIndex}`]['category']]} />
+        <FeedbackEntry label="Critiquer Name" text={dotFeedback[`img${imageIndex}`][`dot${activeDotIndex}`]['name']} />
+        <FeedbackEntry label="Formal Element" text={dotFeedback[`img${imageIndex}`][`dot${activeDotIndex}`]['element']} />
+        <FeedbackEntry label="Description" text={dotFeedback[`img${imageIndex}`][`dot${activeDotIndex}`]['description']} />
+        <FeedbackEntry label="Effect" text={dotFeedback[`img${imageIndex}`][`dot${activeDotIndex}`]['effect']} />
       </div>
-      <div className="icons" onClick={toggleVisibility}>
-          <img src={isVisible ? eye : eyeSlash} alt="Toggle Eye" />
-      </div>
+      :
+      null}
+      
+      <NavigationButton backVisibility={true} nextVisibility={true} backText={"Home"} nextText={"Next"} backFunction={onBackClick} nextFunction={onNextClick}/>
     </div>
-    {activeDotIndex != null && categories != null
-    ?
-    <div>
-      <FeedbackEntry label="Sentiment" text={dotFeedback[`img${imageIndex}`][`dot${activeDotIndex}`]['sentiment'] ? 'Positive' : 'Negative'} />
-      <FeedbackEntry label="Category" text={categories[dotFeedback[`img${imageIndex}`][`dot${activeDotIndex}`]['category']]} />
-      <FeedbackEntry label="Critiquer Name" text={dotFeedback[`img${imageIndex}`][`dot${activeDotIndex}`]['name']} />
-      <FeedbackEntry label="Formal Element" text={dotFeedback[`img${imageIndex}`][`dot${activeDotIndex}`]['element']} />
-      <FeedbackEntry label="Description" text={dotFeedback[`img${imageIndex}`][`dot${activeDotIndex}`]['description']} />
-      <FeedbackEntry label="Effect" text={dotFeedback[`img${imageIndex}`][`dot${activeDotIndex}`]['effect']} />
-    </div>
-    :
-    null}
-    
-    <NavigationButton backVisibility={true} nextVisibility={true} backText={"Home"} nextText={"Next"} backFunction={onBackClick} nextFunction={onNextClick}/>
-  </div>
-);
+  );
 
 }
 

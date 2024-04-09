@@ -2,7 +2,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import './FeedbackImage.css';
 import { addFeedback } from '../../../backend/FirebaseAPICalls/FirebaseAPI';
 
-const FeedbackImage = ({ image, feedback, displayDotFeedback, isVisible }) => {
+const FeedbackImage = ({ 
+  navigateToScreen,
+  image, 
+  feedback, 
+  displayDotFeedback, 
+  isVisible, 
+  clickPosX, 
+  clickPosY, 
+  updateUserClickPosition }) => {
   const imageRef = useRef(null);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [dotPositions, setDotPositions] = useState(null);
@@ -50,6 +58,23 @@ const FeedbackImage = ({ image, feedback, displayDotFeedback, isVisible }) => {
 
 
   const handleClick = (event) => {
+    const imageWidth = imageRef.current.width;
+    const imageHeight = imageRef.current.height;
+
+    const rect = imageRef.current.getBoundingClientRect();
+    const rectLeft = rect.left;
+    const rectTop = rect.top;
+
+    const xRelativeToImage = event.clientX - rect.left;
+    const yRelativeToImage = event.clientY - rect.top;
+
+    const xPercent = (xRelativeToImage / imageWidth);
+    const yPercent = (yRelativeToImage / imageHeight);
+
+    updateUserClickPosition(xPercent, yPercent);
+    navigateToScreen(4, 1);
+
+
     // if (imageRef.current) {
     //   const imageWidth = imageRef.current.width;
     //   const imageHeight = imageRef.current.height;
