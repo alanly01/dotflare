@@ -2,10 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import './FeedbackImage.css';
 import { addFeedback } from '../../../backend/FirebaseAPICalls/FirebaseAPI';
 
-const FeedbackImage = ({ image, feedback, displayDotFeedback }) => {
+const FeedbackImage = ({ image, feedback, displayDotFeedback, isVisible }) => {
   const imageRef = useRef(null);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [dotPosition, setDotPosition] = useState({ xPercent: 0, yPercent: 0, xAbs: 0, yAbs: 0});
   const [dotPositions, setDotPositions] = useState(null);
   const [selectedDots, setSelectedDots] = useState([]);
 
@@ -26,22 +25,25 @@ const FeedbackImage = ({ image, feedback, displayDotFeedback }) => {
     return [xAbs, yAbs]
   }
 
-  const calcDotPositions = () => {
-    var tempDotPositions = [];
-    console.log(feedback);
-    for (let i = 0; i < feedback['numDots']; i++) {
-      var currDot = feedback[`dot${i}`];
-      tempDotPositions[i] = calcDotPosition(currDot['x'], currDot['y'])
-    }
-    console.log(tempDotPositions);
-    setDotPositions(tempDotPositions);
-  }
+  // const calcDotPositions = () => {
+  //   var tempDotPositions = [];
+  //   console.log(feedback);
+  //   for (let i = 0; i < feedback['numDots']; i++) {
+  //     var currDot = feedback[`dot${i}`];
+  //     tempDotPositions[i] = calcDotPosition(currDot['x'], currDot['y'])
+  //   }
+  //   console.log(tempDotPositions);
+  //   setDotPositions(tempDotPositions);
+  // }
 
   useEffect(() => {
     if (imageLoaded && feedback != null) {
-      calcDotPositions();
+      setDotPositions(null);
+      // calcDotPositions();
+      setSelectedDots([]);
     }
-  }, [imageLoaded, feedback])
+  }, [image, imageLoaded, feedback])
+
 
   const handleClick = (event) => {
     // if (imageRef.current) {
@@ -98,10 +100,16 @@ const FeedbackImage = ({ image, feedback, displayDotFeedback }) => {
   const calculateDotStyle = (dotIndex) => {
     const borderColor = `rgba(${feedback[`dot${dotIndex}`]['sentiment'] ? '0,255,0' : '255,0,0'},${selectedDots.includes(dotIndex) ? '1' : '0.33'})`
 
+    console.log(dotPositions)
+    console.log(dotIndex)
+
+    const currDot = feedback[`dot${dotIndex}`];
+    const dotPosition = calcDotPosition(currDot['x'], currDot['y'])
+
     return {
       position: 'absolute',
-      left: `${dotPositions[dotIndex][0]}px`,
-      top: `${dotPositions[dotIndex][1]}px`,
+      left: `${dotPosition[0]}px`,
+      top: `${dotPosition[1]}px`,
       transform: 'translate(-50%, -50%)',
       width: '30px',
       height: '30px',
@@ -114,7 +122,7 @@ const FeedbackImage = ({ image, feedback, displayDotFeedback }) => {
   return (
     <div>
       <img ref={imageRef} onClick={handleClick} className='image' src={image} onLoad={() => setImageLoaded(true)} ></img>
-      {imageLoaded && dotPositions != null && feedback != null
+      {imageLoaded && feedback != null && isVisible
       ?
       Array.from({ length: feedback['numDots']}, (_, index) => (
         <div style={calculateDotStyle(index)} onClick={() => handleDotClick(index)} key={index}/>

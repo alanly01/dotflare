@@ -58,6 +58,7 @@ function ViewScreen({ navigateToScreen, exitSession, isSender, images, fetchImag
     );
     setButtons(updatedButtons);
     setImageIndex(id - 1);
+    setActiveDotIndex(null);
   };
 
   const [activeDotIndex, setActiveDotIndex] = useState(null);
@@ -74,7 +75,8 @@ return (
     <FeedbackImage 
       image={images[imageIndex]} 
       feedback={dotFeedback[`img${imageIndex}`]}
-      displayDotFeedback={displayDotFeedback} />
+      displayDotFeedback={displayDotFeedback}
+      isVisible={isVisible} />
     : 
     null
     }
