@@ -1,22 +1,24 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import './FeedbackScreen.css';
 import SearchBar from '../../Common/SearchBar/SearchBar';
 import NavigationButton from '../../Common/NavigationButton/NavigationButton';
 
-function FeedbackScreen({navigateToScreen, setCritiquerName, setFormalElement,
- setDescription, setEffect, setSentiment}) {
-
-  {/* Sentiment Toggle */}
-  // const [sent, setSent] = useState(0);
-  const [PosColor, setPosColor] = useState('#222');
-  const [NegColor, setNegColor] = useState('indianred');
-  {/* Replace with categories parameter
-      DATA: selectedCategories
- */}
-  const categories = [
-    'Quality of Light', 'Contrast', 'Focus and Sharpness', 
-    'Noise', 'Personal Style', 'Storytelling', 'Framing and Balance'
-  ];
+function FeedbackScreen({
+  navigateToScreen,
+  critiquerName,
+  setCritiquerName ,
+  formalElement,
+  setFormalElement,
+  description,
+  setDescription, 
+  effect,
+  setEffect,
+  sentiment,
+  setSentiment,
+  categoryIndex,
+  setCategoryIndex,
+  categories}) {
+  
   const [selectedCategories, setSelectedCategories] = useState([]);
   const handleCheckboxChange = (category) => {
     setSelectedCategories(prevSelected => {
@@ -34,60 +36,56 @@ function FeedbackScreen({navigateToScreen, setCritiquerName, setFormalElement,
   return (
     <div className="feedbackScreen">
       <div className="feedbackContent">
-        <div class="fb-region">
+        <div className="fb-region">
           <SearchBar
             labelText="Critiquer Name"
-            placeholder=""
+            placeholder="Enter Your Name"
             showButton={false}
             setTextState={setCritiquerName}
           />
         </div>
 
-        <div class="fb-region">
+        <div className="fb-region">
           <SearchBar
             labelText="Formal Element"
-            placeholder=""
+            placeholder="Enter Formal Element"
             showButton={false}
             setTextState={setFormalElement}
           />
         </div>
 
-        <div class="fb-region">
+        <div className="fb-region">
           <SearchBar
             labelText="Description"
-            placeholder=""
+            placeholder="Enter Description"
             showButton={false}
             setTextState={setDescription}
           />
         </div>
 
-        <div class="fb-region">
+        <div className="fb-region">
           <SearchBar
             labelText="Effect"
-            placeholder=""
+            placeholder="Enter Effect"
             showButton={false}
             setTextState={setEffect}
           />
         </div>
 
         {/* Sentiment Select */}
-        <div class="fb-region">
-          <div class="fb-label">
+        <div className="fb-region">
+          <div className="fb-label">
             Select Sentiment
           </div>
           
-          <div class="fb-sent">
-            <button type="button" class="sentBut" style ={{backgroundColor: PosColor}} onClick={() => {
-              setSentiment(1);
-              setPosColor('green');
-              setNegColor('#222');
+          <div className="fb-sent">
+            <button type="button" className="sentBut sentButPos" style ={{backgroundColor: (sentiment != null && sentiment) ? 'rgba(0,255,0,0.33)' : '#222222'}} onClick={() => {
+              setSentiment(true);
             }}>
               Positive
             </button>
-            <button type="button" class="sentBut" style ={{backgroundColor: NegColor}} onClick={() => {
-              setSentiment(0);
-              setPosColor('#222');
-              setNegColor('indianred');
+            <button type="button" className="sentBut sentButNeg" style ={{backgroundColor: (sentiment != null && sentiment) ? '#222222' : 'rgba(255,0,0,0.33)'}} onClick={() => {
+              setSentiment(false);
             }}>
               Negative
             </button>
@@ -95,16 +93,16 @@ function FeedbackScreen({navigateToScreen, setCritiquerName, setFormalElement,
         </div>
 
         {/* Category Select */}
-        <div class="fb-region">
-          <div class="fb-label">
-            Select Categories
+        <div className="fb-region">
+          <div className="fb-label">
+            Select A Category
           </div>
-          <div class="categories-list">
+          <div className="categories-list">
             {categories.map((category, index) => (
                 <div key={index} className="category-item">
                   <input 
                     type="checkbox" 
-                    class="category-checkbox"
+                    className="category-checkbox"
                     id={`category-${index}`} 
                     checked={selectedCategories.includes(category)}
                     onChange={() => handleCheckboxChange(category)}
@@ -115,8 +113,8 @@ function FeedbackScreen({navigateToScreen, setCritiquerName, setFormalElement,
           </div>
         </div>
 
-        <div class="fb-region">
-          <button type="button" class="submitBut" onClick={() => {
+        <div className="fb-region">
+          <button type="button" className="submitBut" onClick={() => {
             {/*BACKEND? Save data on form, navigate to next screen*/}
             onNextClick();
           }}>

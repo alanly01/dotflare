@@ -30,13 +30,13 @@ function CategoryScreen( {navigateToScreen, exitSession} ) {
     'Contrast', 'Typography', 'Color', 'Balance', 'Layout', 'Saturation'
   ];
   const [categories, setCategories] = useState(defaultCategories);
-  const [selectedCategories, setSelectedCategories] = useState(() => {
-    const savedCategories = localStorage.getItem('selectedCategories');
-    return savedCategories ? JSON.parse(savedCategories) : [];
-  });
+  const [selectedCategories, setSelectedCategories] = useState([]);
+    // () => {
+    // const savedCategories = localStorage.getItem('selectedCategories');
+    // return savedCategories ? JSON.parse(savedCategories) : [];
 
   useEffect(() => {
-    localStorage.setItem('selectedCategories', JSON.stringify(selectedCategories));
+    // localStorage.setItem('selectedCategories', JSON.stringify(selectedCategories));
     console.log(selectedCategories.toString())
   }, [selectedCategories]);
 
@@ -75,14 +75,23 @@ function CategoryScreen( {navigateToScreen, exitSession} ) {
 
       <div className="categories-list">
         {categories.map((category, index) => (
-          <div key={index} className="category-item">
-            <input 
+          <div 
+            key={index} 
+            className="category-item"
+            style={{backgroundColor: selectedCategories.includes(category) ? '#BF8DFF' : '#222222'}}
+            onClick={() => handleCheckboxChange(category)}>
+            <div 
+              className="category-text"
+              style={{fontWeight: selectedCategories.includes(category) ? 'bold' : 'normal'}}>
+              {category}
+            </div>
+            {/* <input 
               type="checkbox" 
               className="category-checkbox"
               checked={selectedCategories.includes(category)}
               onChange={() => handleCheckboxChange(category)}
             />
-            <label htmlFor={`category-${index}`}>{category}</label>
+            <label htmlFor={`category-${index}`}>{category}</label> */}
           </div>
         ))}
       </div>

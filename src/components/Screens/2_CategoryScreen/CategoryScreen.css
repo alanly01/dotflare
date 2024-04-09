@@ -20,12 +20,11 @@
   width: calc(100vw - 30px);
   margin: 5px !important;
   padding: 10px !important;
-  background-color: #222222 !important;
   border: 1px solid !important;
   border-color: #444 !important;
   display: flex;
   direction: row;
-  justify-content: start !important;
+  justify-content: center !important;
   border-radius: 5px !important;
 }
 
@@ -37,9 +36,12 @@
   accent-color: #BF8DFF !important;
 }
 
-
 .category-item label {
   color: white
+}
+
+.category-text {
+  color: white;
 }
 
 

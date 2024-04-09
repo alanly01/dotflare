@@ -331,11 +331,19 @@ function App() {
       case 4:
         return <FeedbackScreen 
         navigateToScreen={navigateToScreen} 
+        critiquerName={critiquerName}
         setCritiquerName={setCritiquerName} 
+        formalElement={formalElement}
         setFormalElement={setFormalElement}
+        description={description}
         setDescription={setDescription} 
+        effect={effect}
         setEffect={setEffect} 
-        setSentiment={setSentiment}/>;
+        sentiment={sentiment}
+        setSentiment={setSentiment}
+        categoryIndex={categoryIndex}
+        setCategoryIndex={setCategoryIndex}
+        categories={categories}/>;
       case 5:
         return <ResultsScreen 
         navigateToScreen={navigateToScreen} />;
