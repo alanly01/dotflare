@@ -70,19 +70,19 @@ const FeedbackImage = ({ image, feedback, displayDotFeedback }) => {
     //   const yAbs = yPercent * imageHeight + rectTop + scrollY;
 
     //   setDotPosition({ xPercent, yPercent, xAbs, yAbs });
-    //   // addFeedback(
-    //   //   111111,
-    //   //   222222, 
-    //   //   0, 
-    //   //   xPercent, 
-    //   //   yPercent, 
-    //   //   "Insert Name 2",
-    //   //   "Insert Element 2",
-    //   //   "Insert Description 2",
-    //   //   "Insert Effect 2",
-    //   //   true,
-    //   //   0,
-    //   //   )
+      // addFeedback(
+      //   111111,
+      //   222222, 
+      //   3, 
+      //   .5, 
+      //   .5, 
+      //   "Insert Name 0",
+      //   "Insert Element 0",
+      //   "Insert Description 0",
+      //   "Insert Effect 0",
+      //   true,
+      //   0,
+      //   )
     // }
   };
 
@@ -114,7 +114,7 @@ const FeedbackImage = ({ image, feedback, displayDotFeedback }) => {
   return (
     <div>
       <img ref={imageRef} onClick={handleClick} className='image' src={image} onLoad={() => setImageLoaded(true)} ></img>
-      {imageLoaded && dotPositions != null
+      {imageLoaded && dotPositions != null && feedback != null
       ?
       Array.from({ length: feedback['numDots']}, (_, index) => (
         <div style={calculateDotStyle(index)} onClick={() => handleDotClick(index)} key={index}/>

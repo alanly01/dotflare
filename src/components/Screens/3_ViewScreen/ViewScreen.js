@@ -35,19 +35,29 @@ function ViewScreen({ navigateToScreen, exitSession, isSender, images, fetchImag
     setIsVisible(!isVisible);
   };
 
-  const [buttons, setButtons] = useState([
-    { id: 1, color: '#BF8DFF' }, // First button default color is #BF8DFF
-    { id: 2, color: '#555555' },
-    { id: 3, color: '#555555' },
-    { id: 4, color: '#555555' },
-    { id: 5, color: '#555555' },
-  ]);
+  const generateInitialButtonsState = (count) => {
+    const initialState = [];
+    for (let i = 1; i <= count; i++) {
+      initialState.push({ id: i, color: i === 1 ? '#BF8DFF' : '#555555' });
+    }
+    return initialState;
+  };
 
-  const toggleColor = (id) => {
+  const [buttons, setButtons] = useState([]);
+  const [imageIndex, setImageIndex] = useState(0);
+
+  useEffect(() => {
+    if (images != null) {
+      setButtons(generateInitialButtonsState(images.length))
+    }
+  }, [images])
+
+  const changeImage = (id) => {
     const updatedButtons = buttons.map(button =>
       button.id === id ? { ...button, color: '#BF8DFF' } : { ...button, color: '#555555' }
     );
     setButtons(updatedButtons);
+    setImageIndex(id - 1);
   };
 
   const [activeDotIndex, setActiveDotIndex] = useState(null);
@@ -62,8 +72,8 @@ return (
   <div className="view-screen">
     {images != null && dotFeedback != null ? 
     <FeedbackImage 
-      image={images[0]} 
-      feedback={dotFeedback['img0']}
+      image={images[imageIndex]} 
+      feedback={dotFeedback[`img${imageIndex}`]}
       displayDotFeedback={displayDotFeedback} />
     : 
     null
@@ -81,7 +91,7 @@ return (
           <button
             key={button.id}
             style={{ color: button.color,backgroundColor: 'transparent' }}
-            onClick={() => toggleColor(button.id)}
+            onClick={() => changeImage(button.id)}
           >
             {button.id}
           </button>
@@ -94,12 +104,12 @@ return (
     {activeDotIndex != null && categories != null
     ?
     <div>
-      <FeedbackEntry label="Sentiment" text={dotFeedback['img0'][`dot${activeDotIndex}`]['sentiment'] ? 'Positive' : 'Negative'} />
-      <FeedbackEntry label="Category" text={categories[dotFeedback['img0'][`dot${activeDotIndex}`]['category']]} />
-      <FeedbackEntry label="Critiquer Name" text={dotFeedback['img0'][`dot${activeDotIndex}`]['name']} />
-      <FeedbackEntry label="Formal Element" text={dotFeedback['img0'][`dot${activeDotIndex}`]['element']} />
-      <FeedbackEntry label="Description" text={dotFeedback['img0'][`dot${activeDotIndex}`]['description']} />
-      <FeedbackEntry label="Effect" text={dotFeedback['img0'][`dot${activeDotIndex}`]['effect']} />
+      <FeedbackEntry label="Sentiment" text={dotFeedback[`img${imageIndex}`][`dot${activeDotIndex}`]['sentiment'] ? 'Positive' : 'Negative'} />
+      <FeedbackEntry label="Category" text={categories[dotFeedback[`img${imageIndex}`][`dot${activeDotIndex}`]['category']]} />
+      <FeedbackEntry label="Critiquer Name" text={dotFeedback[`img${imageIndex}`][`dot${activeDotIndex}`]['name']} />
+      <FeedbackEntry label="Formal Element" text={dotFeedback[`img${imageIndex}`][`dot${activeDotIndex}`]['element']} />
+      <FeedbackEntry label="Description" text={dotFeedback[`img${imageIndex}`][`dot${activeDotIndex}`]['description']} />
+      <FeedbackEntry label="Effect" text={dotFeedback[`img${imageIndex}`][`dot${activeDotIndex}`]['effect']} />
     </div>
     :
     null}
