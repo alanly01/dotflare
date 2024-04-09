@@ -84,6 +84,7 @@ function ViewScreen({
       {images != null && dotFeedback != null ? 
       <FeedbackImage 
         navigateToScreen={navigateToScreen}
+        isSender={isSender}
         image={images[imageIndex]} 
         feedback={dotFeedback[`img${imageIndex}`]}
         displayDotFeedback={displayDotFeedback}

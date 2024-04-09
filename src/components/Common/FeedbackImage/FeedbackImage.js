@@ -4,6 +4,7 @@ import { addFeedback } from '../../../backend/FirebaseAPICalls/FirebaseAPI';
 
 const FeedbackImage = ({ 
   navigateToScreen,
+  isSender,
   image, 
   feedback, 
   displayDotFeedback, 
@@ -58,12 +59,14 @@ const FeedbackImage = ({
 
 
   const handleClick = (event) => {
+    if (isSender) {
+      return
+    }
+
     const imageWidth = imageRef.current.width;
     const imageHeight = imageRef.current.height;
 
     const rect = imageRef.current.getBoundingClientRect();
-    const rectLeft = rect.left;
-    const rectTop = rect.top;
 
     const xRelativeToImage = event.clientX - rect.left;
     const yRelativeToImage = event.clientY - rect.top;
