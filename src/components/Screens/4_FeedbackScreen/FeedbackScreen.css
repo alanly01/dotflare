@@ -15,22 +15,75 @@
 
 .fb-region {
   width: calc(100vw - 30px); 
-  padding: 2em;
-  margin: 0%;
+  margin:2%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+.fb-label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 5px;
+}
+
+.fb-sent {
+  display: flex;
+  width: 100%;
+  margin-bottom:5px;
+}
+
 .sentBut {
-  background-color: #424242;
+  flex: 1 1 0;
+  border: 2px solid #444;
+  background-color: #222;
+  padding-top:5%;
+  padding-bottom:5%;
+  margin-bottom:5px;
+  margin-left:5%;
+  margin-right:5%;
+  border-radius:5px;
   font-weight: 300;
   font-size: 20px;
 }
 
 .submitBut {
   background-color: #7549a2;
-  font-weight: 500;
+  border-color: black;
+  border-radius:5px;
+  padding-left:5%;
+  padding-right:5%;
+  font-weight: 400;
   font-size: 20px;
+}
+
+.categories-list {
+  display: grid;
+  justify-content: center;
+  padding: 20px;
+}
+
+.category-item {
+  background-color: #222;
+  border-radius: 20px;
+  padding: 10px 20px;
+  margin: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+input[type="checkbox"] {
+  background-color: black;
+  width: 2em;
+  height: 2em;
+  accent-color: purple;
+  outline: 2px solid black;
+}
+
+.category-item label {
+  color:white;
+  margin-left: 5px;
 }
 

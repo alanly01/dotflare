@@ -8,8 +8,8 @@ function FeedbackScreen({navigateToScreen, setCritiquerName, setFormalElement,
 
   {/* Sentiment Toggle */}
   // const [sent, setSent] = useState(0);
-  const [PosColor, setPosColor] = useState('gray');
-  const [NegColor, setNegColor] = useState('lightcoral');
+  const [PosColor, setPosColor] = useState('#222');
+  const [NegColor, setNegColor] = useState('indianred');
   {/* Replace with categories parameter
       DATA: selectedCategories
  */}
@@ -26,6 +26,10 @@ function FeedbackScreen({navigateToScreen, setCritiquerName, setFormalElement,
       return newSelected;
     });
   };
+
+  const onNextClick = async () => {
+    navigateToScreen(5,5);
+  }
 
   return (
     <div className="feedbackScreen">
@@ -59,7 +63,7 @@ function FeedbackScreen({navigateToScreen, setCritiquerName, setFormalElement,
 
         <div class="fb-region">
           <SearchBar
-            labelText="Description"
+            labelText="Effect"
             placeholder=""
             showButton={false}
             setTextState={setEffect}
@@ -71,20 +75,19 @@ function FeedbackScreen({navigateToScreen, setCritiquerName, setFormalElement,
           <div class="fb-label">
             Select Sentiment
           </div>
-          <div class="fb-box">
+          
+          <div class="fb-sent">
             <button type="button" class="sentBut" style ={{backgroundColor: PosColor}} onClick={() => {
               setSentiment(1);
-              setPosColor('lightgreen');
-              setNegColor('gray');
+              setPosColor('green');
+              setNegColor('#222');
             }}>
               Positive
             </button>
-          </div>
-          <div class="fb-box">
             <button type="button" class="sentBut" style ={{backgroundColor: NegColor}} onClick={() => {
               setSentiment(0);
-              setPosColor('gray');
-              setNegColor('lightcoral');
+              setPosColor('#222');
+              setNegColor('indianred');
             }}>
               Negative
             </button>
@@ -96,11 +99,12 @@ function FeedbackScreen({navigateToScreen, setCritiquerName, setFormalElement,
           <div class="fb-label">
             Select Categories
           </div>
-          <div class="fb-box">
+          <div class="categories-list">
             {categories.map((category, index) => (
                 <div key={index} className="category-item">
                   <input 
                     type="checkbox" 
+                    class="category-checkbox"
                     id={`category-${index}`} 
                     checked={selectedCategories.includes(category)}
                     onChange={() => handleCheckboxChange(category)}
@@ -112,17 +116,16 @@ function FeedbackScreen({navigateToScreen, setCritiquerName, setFormalElement,
         </div>
 
         <div class="fb-region">
-          <div class="fb-box">
-            <button type="button" class="submitBut" onClick={() => {
-              {/*BACKEND? Save data on form, navigate to next screen*/}
-            }}>
-              Submit
-            </button>
-          </div>
+          <button type="button" class="submitBut" onClick={() => {
+            {/*BACKEND? Save data on form, navigate to next screen*/}
+            onNextClick();
+          }}>
+            Submit
+          </button>
         </div>
 
         {/* Add back navigation */}
-        <NavigationButton backVisibility={true} nextVisibility={false} backText={"View"}/>
+        <NavigationButton backVisibility={true} nextVisibility={false} backText={"View"} />
       </div>
     </div>
   );
