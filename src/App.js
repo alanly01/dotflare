@@ -337,7 +337,7 @@ function App() {
   };
 
   return (
-    <div style={{ backgroundColor: '#1E1E1E' }}>
+    <div style={{ backgroundColor: 'rgb(30, 30, 30)' }}>
       {currentScreenIndex !== 0 && (
         <ProgressNavigation steps={steps} currentStep={currentNavStep} setCurrentStep={setCurrentScreenIndex} />
       )}
