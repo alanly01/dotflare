@@ -13,6 +13,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 // This is imported for testing purposes
 import { createSession, joinSession, addImages, getImages, addCategories, getCategories, addFeedback, getFeedback } from "./backend/FirebaseAPICalls/FirebaseAPI"
 import { toBeEmpty } from '@testing-library/jest-dom/dist/matchers.js';
+import { set } from 'firebase/database';
 
 
 /**
@@ -286,7 +287,8 @@ function App() {
       case 3:
         return <ViewScreen navigateToScreen={navigateToScreen} exitSession={exitSession} isSender={isSender}/>;
       case 4:
-        return <FeedbackScreen navigateToScreen={navigateToScreen} />;
+        return <FeedbackScreen navigateToScreen={navigateToScreen} setCritiquerName={setCritiquerName} setFormalElement={setFormalElement}
+        setDescription={setDescription} setEffect={setEffect} setSentiment={setSentiment}/>;
       case 5:
         return <ResultsScreen navigateToScreen={navigateToScreen} />;
       default:

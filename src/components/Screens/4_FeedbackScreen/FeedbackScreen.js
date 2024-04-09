@@ -1,20 +1,22 @@
 import React, {useState} from 'react'
 import './FeedbackScreen.css';
+import SearchBar from '../../Common/SearchBar/SearchBar';
 import NavigationButton from '../../Common/NavigationButton/NavigationButton';
 
-function FeedbackScreen(navigateToScreen, categories) {
-  const [sent, setSent] = useState(0);
+function FeedbackScreen({navigateToScreen, setCritiquerName, setFormalElement,
+ setDescription, setEffect, setSentiment}) {
+
+  {/* Sentiment Toggle */}
+  // const [sent, setSent] = useState(0);
   const [PosColor, setPosColor] = useState('gray');
   const [NegColor, setNegColor] = useState('lightcoral');
-  
   {/* Replace with categories parameter
       DATA: selectedCategories
  */}
-  const defaultCategories = [
+  const categories = [
     'Quality of Light', 'Contrast', 'Focus and Sharpness', 
     'Noise', 'Personal Style', 'Storytelling', 'Framing and Balance'
   ];
-  categories = defaultCategories;
   const [selectedCategories, setSelectedCategories] = useState([]);
   const handleCheckboxChange = (category) => {
     setSelectedCategories(prevSelected => {
@@ -27,99 +29,101 @@ function FeedbackScreen(navigateToScreen, categories) {
 
   return (
     <div className="feedbackScreen">
-      <div class="fb-region">
-        <div class="fb-label">
-          Critiquer Name
+      <div className="feedbackContent">
+        <div class="fb-region">
+          <SearchBar
+            labelText="Critiquer Name"
+            placeholder=""
+            showButton={false}
+            setTextState={setCritiquerName}
+          />
         </div>
-        <div class="fb-box">
-          <input class="fb-inp" name="fb-name" />
-        </div>
-      </div>
 
-      <div class="fb-region">
-        <div class="fb-label">
-          Formal Element
+        <div class="fb-region">
+          <SearchBar
+            labelText="Formal Element"
+            placeholder=""
+            showButton={false}
+            setTextState={setFormalElement}
+          />
         </div>
-        <div class="fb-box">
-          <input class="fb-inp" name="fb-element" />
-        </div>
-      </div>
 
-      <div class="fb-region">
-        <div class="fb-label">
-          Description
+        <div class="fb-region">
+          <SearchBar
+            labelText="Description"
+            placeholder=""
+            showButton={false}
+            setTextState={setDescription}
+          />
         </div>
-        <div class="fb-box">
-          <input class="fb-inp" name="fb-desc" />
-        </div>
-      </div>
 
-      <div class="fb-region">
-        <div class="fb-label">
-          Effect
+        <div class="fb-region">
+          <SearchBar
+            labelText="Description"
+            placeholder=""
+            showButton={false}
+            setTextState={setEffect}
+          />
         </div>
-        <div class="fb-box">
-          <input class="fb-inp" name="fb-effect" />
-        </div>
-      </div>
 
-      {/* Sentiment Select */}
-      <div class="fb-region">
-        <div class="fb-label">
-          Select Sentiment
+        {/* Sentiment Select */}
+        <div class="fb-region">
+          <div class="fb-label">
+            Select Sentiment
+          </div>
+          <div class="fb-box">
+            <button type="button" class="sentBut" style ={{backgroundColor: PosColor}} onClick={() => {
+              setSentiment(1);
+              setPosColor('lightgreen');
+              setNegColor('gray');
+            }}>
+              Positive
+            </button>
+          </div>
+          <div class="fb-box">
+            <button type="button" class="sentBut" style ={{backgroundColor: NegColor}} onClick={() => {
+              setSentiment(0);
+              setPosColor('gray');
+              setNegColor('lightcoral');
+            }}>
+              Negative
+            </button>
+          </div>
         </div>
-        <div class="fb-box">
-          <button type="button" class="sentBut" style ={{backgroundColor: PosColor}} onClick={() => {
-            setSent(1);
-            setPosColor('lightgreen');
-            setNegColor('gray');
-          }}>
-            Positive
-          </button>
-        </div>
-        <div class="fb-box">
-          <button type="button" class="sentBut" style ={{backgroundColor: NegColor}} onClick={() => {
-            setSent(0);
-            setPosColor('gray');
-            setNegColor('lightcoral');
-          }}>
-            Negative
-          </button>
-        </div>
-      </div>
 
-      {/* Category Select */}
-      <div class="fb-region">
-        <div class="fb-label">
-          Select Categories
+        {/* Category Select */}
+        <div class="fb-region">
+          <div class="fb-label">
+            Select Categories
+          </div>
+          <div class="fb-box">
+            {categories.map((category, index) => (
+                <div key={index} className="category-item">
+                  <input 
+                    type="checkbox" 
+                    id={`category-${index}`} 
+                    checked={selectedCategories.includes(category)}
+                    onChange={() => handleCheckboxChange(category)}
+                  />
+                  <label htmlFor={`category-${index}`}>{category}</label>
+                </div>
+            ))}
+          </div>
         </div>
-        <div class="fb-box">
-          {categories.map((category, index) => (
-              <div key={index} className="category-item">
-                <input 
-                  type="checkbox" 
-                  id={`category-${index}`} 
-                  checked={selectedCategories.includes(category)}
-                  onChange={() => handleCheckboxChange(category)}
-                />
-                <label htmlFor={`category-${index}`}>{category}</label>
-              </div>
-          ))}
-        </div>
-      </div>
 
-      <div class="fb-region">
-        <div class="fb-box">
-          <button type="button" class="submitBut" onClick={() => {
-            {/*BACKEND? Save data on form, navigate to next screen*/}
-          }}>
-            Submit
-          </button>
+        <div class="fb-region">
+          <div class="fb-box">
+            <button type="button" class="submitBut" onClick={() => {
+              {/*BACKEND? Save data on form, navigate to next screen*/}
+            }}>
+              Submit
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* Add back navigation */}
-      <NavigationButton backVisibility={true} nextVisibility={false} backText={"View"}/>
+        {/* Add back navigation */}
+        <NavigationButton backVisibility={true} nextVisibility={false} backText={"View"}/>
+      </div>
     </div>
   );
 }
