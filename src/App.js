@@ -196,6 +196,7 @@ function App() {
   // Set on ViewScreen, used in FeedbackScreen
   const [clickPosX, setClickPosX] = useState();
   const [clickPosY, setClickPosY] = useState();
+  const [categories, setCategories] = useState();
   // Set on FeedbackScreen, used in FeedbackScreen
   const [critiquerName, setCritiquerName] = useState();
   const [formalElement, setFormalElement] = useState();
@@ -209,6 +210,18 @@ function App() {
   const [images, setImages] = useState();
   const [dotFeedback, setDotFeedback] = useState();
 
+  const fetchImages = async () => {
+    setImages(await getImages(senderToken, receiverToken));
+  }
+
+  const fetchDotFeedback = async () => {
+    setDotFeedback(await getFeedback(senderToken, receiverToken));
+  }
+
+  const fetchCategories = async () => {
+    setCategories(await getCategories(senderToken, receiverToken))
+  }
+
   const setSessionTokens = async () => {
     const tokens = await createSession();
     setSenderToken(tokens[0]);
@@ -216,33 +229,33 @@ function App() {
   }
 
   const enterSession = async (sessionToken) => {
-    const sessionData = await joinSession(sessionToken);
-    if (sessionData == null) {
+    const tokenData = await joinSession(sessionToken);
+    if (tokenData == null) {
       return;
     }
 
-    setTokenInfo(sessionData)
-    setIsSender(sessionData.isSender)
-    if (sessionData.isSender) {
+    setTokenInfo(tokenData)
+    setIsSender(tokenData.isSender)
+    if (tokenData.isSender) {
       setSenderToken(sessionToken)
-      setReceiverToken(sessionData.tokenPair)
+      setReceiverToken(tokenData.tokenPair)
     } else {
-      if (sessionData.isVisible == true) {
-        setSenderToken(sessionData.tokenPair)
+      if (tokenData.isVisible == true) {
+        setSenderToken(tokenData.tokenPair)
       setReceiverToken(sessionToken)
       }
     }
 
-    if (sessionData.isSender) {
-      if (sessionData.uploadedImages == false) {
+    if (tokenData.isSender) {
+      if (tokenData.uploadedImages == false) {
         navigateToScreen(1, 0)
-      } else if (sessionData.selectedCategories == false) {
+      } else if (tokenData.selectedCategories == false) {
         navigateToScreen(2, 1)
       } else {
         navigateToScreen(3, 2)
       }
     } else {
-      if (sessionData.isVisible == true) {
+      if (tokenData.isVisible == true) {
         navigateToScreen(3, 0)
       }
     }
@@ -255,6 +268,7 @@ function App() {
     setIsSender();
     setClickPosX();
     setClickPosY();
+    setCategories();
     setCritiquerName();
     setFormalElement();
     setDescription();
@@ -279,18 +293,44 @@ function App() {
   const renderScreen = () => {
     switch (currentScreenIndex) {
       case 0:
-        return <HomeScreen navigateToScreen={navigateToScreen} senderToken={senderToken} receiverToken={receiverToken} getSessionTokens={setSessionTokens} enterSession={enterSession}/>;
+        return <HomeScreen 
+        navigateToScreen={navigateToScreen} 
+        senderToken={senderToken} 
+        receiverToken={receiverToken} 
+        getSessionTokens={setSessionTokens} 
+        enterSession={enterSession}/>;
       case 1:
-        return <UploadScreen navigateToScreen={navigateToScreen} exitSession={exitSession} senderToken={senderToken} receiverToken={receiverToken} />;
+        return <UploadScreen 
+        navigateToScreen={navigateToScreen} 
+        exitSession={exitSession} 
+        senderToken={senderToken} 
+        receiverToken={receiverToken} />;
       case 2:
-        return <CategoryScreen navigateToScreen={navigateToScreen} exitSession={exitSession} />;
+        return <CategoryScreen 
+        navigateToScreen={navigateToScreen} 
+        exitSession={exitSession} />;
       case 3:
-        return <ViewScreen navigateToScreen={navigateToScreen} exitSession={exitSession} isSender={isSender}/>;
+        return <ViewScreen 
+        navigateToScreen={navigateToScreen} 
+        exitSession={exitSession} 
+        isSender={isSender}
+        images={images}
+        fetchImages={fetchImages}
+        dotFeedback={dotFeedback}
+        fetchDotFeedback={fetchDotFeedback}
+        categories={categories}
+        fetchCategories={fetchCategories}/>;
       case 4:
-        return <FeedbackScreen navigateToScreen={navigateToScreen} setCritiquerName={setCritiquerName} setFormalElement={setFormalElement}
-        setDescription={setDescription} setEffect={setEffect} setSentiment={setSentiment}/>;
+        return <FeedbackScreen 
+        navigateToScreen={navigateToScreen} 
+        setCritiquerName={setCritiquerName} 
+        setFormalElement={setFormalElement}
+        setDescription={setDescription} 
+        setEffect={setEffect} 
+        setSentiment={setSentiment}/>;
       case 5:
-        return <ResultsScreen navigateToScreen={navigateToScreen} />;
+        return <ResultsScreen 
+        navigateToScreen={navigateToScreen} />;
       default:
         return null;
     }

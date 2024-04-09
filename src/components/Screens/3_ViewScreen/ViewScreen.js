@@ -7,10 +7,9 @@ import eyeSlash from '../../../images/eye-slash-solid.svg';
 import help from '../../../images/circle-question-regular.svg';
 import picture from '../../../images/picture.jpg';
 import NavigationButton from '../../Common/NavigationButton/NavigationButton';
+import FeedbackEntry from '../../Common/FeedbackEntry/FeedbackEntry';
 
-function ViewScreen({ navigateToScreen, exitSession, isSender }) {
-  const [imageList, setImageList] = useState(null);
-  const [feedbackList, setFeedbackList] = useState(null);
+function ViewScreen({ navigateToScreen, exitSession, isSender, images, fetchImages, dotFeedback, fetchDotFeedback, categories, fetchCategories }) {
 
   const onBackClick = () => {
     exitSession();
@@ -25,15 +24,10 @@ function ViewScreen({ navigateToScreen, exitSession, isSender }) {
     }
   }
 
-  const fetchImages = async () => {
-    setImageList(await getImages(111111, 222222));
-  }
-  const fetchFeedback = async () => {
-    setFeedbackList(await getFeedback(111111, 222222));
-  }
   useEffect(() => {
     fetchImages();
-    fetchFeedback();
+    fetchDotFeedback();
+    fetchCategories();
   }, []);
 
   const [isVisible, setIsVisible] = useState(true);
@@ -56,17 +50,28 @@ function ViewScreen({ navigateToScreen, exitSession, isSender }) {
     setButtons(updatedButtons);
   };
 
+  const [activeDotIndex, setActiveDotIndex] = useState(null);
+
+  const displayDotFeedback = (dotIndex) => {
+    setActiveDotIndex(dotIndex);
+  }
+
+  
+
 return (
-  <div className="temporary-class">
-    {imageList != null && feedbackList != null ? 
+  <div className="view-screen">
+    {images != null && dotFeedback != null ? 
     <FeedbackImage 
-      image={imageList[1]} 
-      feedback={feedbackList['img1']} />
+      image={images[0]} 
+      feedback={dotFeedback['img0']}
+      displayDotFeedback={displayDotFeedback} />
     : 
     null
     }
 
-    <p style={{color:'white'}}>Click on the dots to view feedback.</p>
+    <div className='hint'>
+      Click on the dots to view feedback.
+    </div>
     <div className="button-row">
       <div className="icons">
         <img src={help} alt="Help" />
@@ -86,6 +91,19 @@ return (
           <img src={isVisible ? eye : eyeSlash} alt="Toggle Eye" />
       </div>
     </div>
+    {activeDotIndex != null && categories != null
+    ?
+    <div>
+      <FeedbackEntry label="Sentiment" text={dotFeedback['img0'][`dot${activeDotIndex}`]['sentiment'] ? 'Positive' : 'Negative'} />
+      <FeedbackEntry label="Category" text={categories[dotFeedback['img0'][`dot${activeDotIndex}`]['category']]} />
+      <FeedbackEntry label="Critiquer Name" text={dotFeedback['img0'][`dot${activeDotIndex}`]['name']} />
+      <FeedbackEntry label="Formal Element" text={dotFeedback['img0'][`dot${activeDotIndex}`]['element']} />
+      <FeedbackEntry label="Description" text={dotFeedback['img0'][`dot${activeDotIndex}`]['description']} />
+      <FeedbackEntry label="Effect" text={dotFeedback['img0'][`dot${activeDotIndex}`]['effect']} />
+    </div>
+    :
+    null}
+    
     <NavigationButton backVisibility={true} nextVisibility={true} backText={"Home"} nextText={"Next"} backFunction={onBackClick} nextFunction={onNextClick}/>
   </div>
 );
