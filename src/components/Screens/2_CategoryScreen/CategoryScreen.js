@@ -11,7 +11,19 @@ function CategoryScreen( {navigateToScreen, exitSession} ) {
   }
 
   const onNextClick = async () => {
-    navigateToScreen(3, 2)
+    const senderToken = '111111';
+    const receiverToken = '222222';
+    try {
+      const saveSuccess = await addCategories(senderToken, receiverToken, selectedCategories);
+      if (saveSuccess) {
+        console.log('Categories saved successfully');
+        navigateToScreen(3, 2)
+      } else {
+        console.error('Failed to save categories');
+      }
+    } catch (error) {
+      console.error('Error saving categories:', error);
+    }
   }
 
   const defaultCategories = [
@@ -46,26 +58,6 @@ function CategoryScreen( {navigateToScreen, exitSession} ) {
     }
   };
 
-  const handleInputChange = (event) => {
-    setNewCategory(event.target.value);
-  };
-
-  const handleNextClick = async () => {
-    const senderToken = '111111';
-    const receiverToken = '222222';
-    try {
-      const saveSuccess = await addCategories(senderToken, receiverToken, selectedCategories);
-      if (saveSuccess) {
-        console.log('Categories saved successfully');
-        navigateToScreen('ViewImage');
-      } else {
-        console.error('Failed to save categories');
-      }
-    } catch (error) {
-      console.error('Error saving categories:', error);
-    }
-  };
-
 
   const setTextState = (text) => {
     setNewCategory(text)
@@ -86,7 +78,7 @@ function CategoryScreen( {navigateToScreen, exitSession} ) {
           <div key={index} className="category-item">
             <input 
               type="checkbox" 
-              class="category-checkbox"
+              className="category-checkbox"
               checked={selectedCategories.includes(category)}
               onChange={() => handleCheckboxChange(category)}
             />
