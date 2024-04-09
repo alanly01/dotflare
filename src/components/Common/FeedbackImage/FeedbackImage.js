@@ -44,6 +44,10 @@ const FeedbackImage = ({ image, feedback, displayDotFeedback, isVisible }) => {
     }
   }, [image, imageLoaded, feedback])
 
+  useEffect(() => {
+    setImageLoaded(false);
+  }, [image])
+
 
   const handleClick = (event) => {
     // if (imageRef.current) {
