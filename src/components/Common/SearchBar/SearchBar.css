@@ -33,17 +33,18 @@
   }
   
   .search-button {
-    width: 30px;
-    min-width: 30px; 
+    width: 51px;
+    min-width: 51px; 
     margin-left: 10px;
-    background-color: transparent;
+    background-color: #BF8DFF;
     border: none;
+    border-radius: 5px;
     outline: none;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0;
+    padding: 10px;
   }
   
   .search-button img {

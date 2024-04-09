@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './CategoryScreen.css';
 import NavigationButton from '../../Common/NavigationButton/NavigationButton';
 import { addCategories } from '../../../backend/FirebaseAPICalls/FirebaseAPI';
+import SearchBar from '../../Common/SearchBar/SearchBar';
 
 function CategoryScreen( {navigateToScreen, exitSession} ) {
 
@@ -65,29 +66,34 @@ function CategoryScreen( {navigateToScreen, exitSession} ) {
     }
   };
 
+
+  const setTextState = (text) => {
+    setNewCategory(text)
+  }
+
   return (
     <div className="temporary-class">
-      <header className="App-header">
-        {/* <p>Add Categories</p> */}
-        <div className="search-container">
-          <input type="text" placeholder="Custom Category" value={newCategory} onChange={handleInputChange} />
-          <button onClick={addCategory}>Add</button>
-        </div>
 
-        <div className="categories-list">
-          {categories.map((category, index) => (
-            <div key={index} className="category-item">
-              <input 
-                type="checkbox" 
-                id={`category-${index}`} 
-                checked={selectedCategories.includes(category)}
-                onChange={() => handleCheckboxChange(category)}
-              />
-              <label htmlFor={`category-${index}`}>{category}</label>
-            </div>
-          ))}
-        </div>
-      </header>
+      <SearchBar 
+      labelText="Add Category"
+      placeholder="Enter Category Name"
+      showButton={true}
+      setTextState={setTextState}
+      onClick={addCategory}/>
+
+      <div className="categories-list">
+        {categories.map((category, index) => (
+          <div key={index} className="category-item">
+            <input 
+              type="checkbox" 
+              class="category-checkbox"
+              checked={selectedCategories.includes(category)}
+              onChange={() => handleCheckboxChange(category)}
+            />
+            <label htmlFor={`category-${index}`}>{category}</label>
+          </div>
+        ))}
+      </div>
       <NavigationButton backVisibility={true} nextVisibility={true} backText={"Home"} nextText={"Confirm"} backFunction={onBackClick} nextFunction={onNextClick}/>
     </div>
   );
