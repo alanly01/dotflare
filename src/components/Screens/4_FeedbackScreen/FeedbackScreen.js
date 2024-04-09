@@ -2,9 +2,16 @@ import React, {useState, useEffect} from 'react'
 import './FeedbackScreen.css';
 import SearchBar from '../../Common/SearchBar/SearchBar';
 import NavigationButton from '../../Common/NavigationButton/NavigationButton';
+import { addFeedback } from '../../../backend/FirebaseAPICalls/FirebaseAPI';
+import { element } from 'prop-types';
 
 function FeedbackScreen({
   navigateToScreen,
+  senderToken,
+  receiverToken,
+  imageIndex,
+  clickPosX,
+  clickPosY,
   critiquerName,
   setCritiquerName ,
   formalElement,
@@ -19,14 +26,30 @@ function FeedbackScreen({
   setCategoryIndex,
   categories}) {
   
-  const [selectedCategoryIndex, setSelectedCategorIndex] = useState(null);
   const handleCheckboxChange = (categoryIndex) => {
-    setSelectedCategorIndex(categoryIndex);
+    setCategoryIndex(categoryIndex);
     console.log(categoryIndex);
   };
 
+  const onBackClick = () => {
+    navigateToScreen(3, 0);
+  }
+
   const onNextClick = async () => {
-    navigateToScreen(5,5);
+    await addFeedback(
+      senderToken, 
+      receiverToken, 
+      imageIndex, 
+      clickPosX, 
+      clickPosY, 
+      critiquerName, 
+      formalElement, 
+      description, 
+      effect, 
+      sentiment, 
+      categoryIndex,
+    )
+    navigateToScreen(3, 0);
   }
 
   return (
@@ -98,11 +121,11 @@ function FeedbackScreen({
               <div 
               key={index} 
               className="category-item"
-              style={{backgroundColor: selectedCategoryIndex == index ? '#BF8DFF' : '#222222'}}
+              style={{backgroundColor: categoryIndex == index ? '#BF8DFF' : '#222222'}}
               onClick={() => handleCheckboxChange(index)}>
               <div 
                 className="category-text"
-                style={{fontWeight: selectedCategoryIndex == index ? 'bold' : 'normal'}}>
+                style={{fontWeight: categoryIndex == index ? 'bold' : 'normal'}}>
                 {category}
               </div>
               {/* <input 
@@ -117,8 +140,7 @@ function FeedbackScreen({
           </div>
         </div>
 
-        {/* Add back navigation */}
-        <NavigationButton backVisibility={true} nextVisibility={false} backText={"View"} />
+        <NavigationButton backVisibility={true} backFunction={onBackClick} nextVisibility={true} nextFunction={onNextClick} backText={"Back"} nextText={"Submit"}/>
       </div>
     </div>
   );

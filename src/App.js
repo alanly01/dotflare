@@ -198,6 +198,7 @@ function App() {
   const [clickPosY, setClickPosY] = useState();
   const [categories, setCategories] = useState();
   // Set on FeedbackScreen, used in FeedbackScreen
+  const [imageIndex, setImageIndex] = useState(0);
   const [critiquerName, setCritiquerName] = useState();
   const [formalElement, setFormalElement] = useState();
   const [description, setDescription] = useState();
@@ -277,7 +278,8 @@ function App() {
     setCategoryIndex();
     setImages();
     setDotFeedback();
-    navigateToScreen(0, 0)
+    navigateToScreen(0, 0);
+    setImageIndex(0);
   }
   
   const navigateToScreen = (screenIndex, navStep) => {
@@ -319,6 +321,7 @@ function App() {
         navigateToScreen={navigateToScreen} 
         exitSession={exitSession} 
         isSender={isSender}
+        setFeedbackImageIndex={setImageIndex}
         images={images}
         fetchImages={fetchImages}
         dotFeedback={dotFeedback}
@@ -331,6 +334,11 @@ function App() {
       case 4:
         return <FeedbackScreen 
         navigateToScreen={navigateToScreen} 
+        senderToken={senderToken}
+        receiverToken={receiverToken}
+        imageIndex={imageIndex}
+        clickPosX={clickPosX}
+        clickPosY={clickPosY}
         critiquerName={critiquerName}
         setCritiquerName={setCritiquerName} 
         formalElement={formalElement}

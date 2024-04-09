@@ -13,6 +13,7 @@ function ViewScreen({
   navigateToScreen, 
   exitSession, 
   isSender, 
+  setFeedbackImageIndex,
   images, 
   fetchImages, 
   dotFeedback, 
@@ -31,7 +32,6 @@ function ViewScreen({
     if (isSender) {
       navigateToScreen(5, 3)
     } else {
-      // THIS IS TEMPORARY FOR TESTING
       navigateToScreen(5, 2)
     }
   }
@@ -70,6 +70,7 @@ function ViewScreen({
     );
     setButtons(updatedButtons);
     setImageIndex(id - 1);
+    setFeedbackImageIndex(id - 1);
     setActiveDotIndex(null);
   };
 
