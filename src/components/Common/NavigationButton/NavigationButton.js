@@ -7,6 +7,7 @@ import chevronRightIcon from '../../../images/chevron-right-solid.svg';
 const NavigationButton = ({backVisibility, nextVisibility, backText, nextText, backFunction, nextFunction }) => {
   return (
     <div>
+      <div className='background' />
       {backVisibility
       ?
       <button className='back-button nav-button' onClick={() => backFunction()}>

@@ -35,3 +35,12 @@
   right: 0;
   padding: 0px;
 }
+
+.background {
+  position: fixed;
+  left: 0px;
+  bottom: 0px;
+  width: 100vw;
+  height: 60px;
+  background-color: rgb(30, 30, 30);
+}
