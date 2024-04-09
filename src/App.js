@@ -315,7 +315,9 @@ function App() {
       case 2:
         return <CategoryScreen 
         navigateToScreen={navigateToScreen} 
-        exitSession={exitSession} />;
+        exitSession={exitSession}
+        senderToken={senderToken} 
+        receiverToken={receiverToken} />;
       case 3:
         return <ViewScreen 
         navigateToScreen={navigateToScreen} 

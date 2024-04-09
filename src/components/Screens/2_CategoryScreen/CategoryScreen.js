@@ -4,15 +4,13 @@ import NavigationButton from '../../Common/NavigationButton/NavigationButton';
 import { addCategories } from '../../../backend/FirebaseAPICalls/FirebaseAPI';
 import SearchBar from '../../Common/SearchBar/SearchBar';
 
-function CategoryScreen( {navigateToScreen, exitSession} ) {
+function CategoryScreen( {navigateToScreen, exitSession, senderToken, receiverToken} ) {
 
   const onBackClick = () => {
     exitSession();
   }
 
   const onNextClick = async () => {
-    const senderToken = '111111';
-    const receiverToken = '222222';
     try {
       const saveSuccess = await addCategories(senderToken, receiverToken, selectedCategories);
       if (saveSuccess) {
