@@ -1,8 +1,11 @@
 .feedbackScreen {
-  height: 100vh;
-  margin-top: 100px;
-  overflow-y: 'auto';
-  overflow-x: 'hidden';
+  position: relative;
+  min-height: 100vh; /* Set min-height to take up the full viewport height */
+  padding-top: 120px;
+  padding-bottom: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .feedbackContent {
@@ -24,7 +27,6 @@
   font-weight: bold;
   color: #fff;
   margin-left: 5px;
-  margin-bottom: 5px;
   align-self: flex-start;
 }
 
@@ -69,7 +71,7 @@
 .categories-list {
   display: grid;
   justify-content: center;
-  padding: 20px;
+  margin-top: -3px;
 }
 
 .category-item {
@@ -82,16 +84,4 @@
   justify-content: center;
 }
 
-input[type="checkbox"] {
-  background-color: black;
-  width: 2em;
-  height: 2em;
-  accent-color: purple;
-  outline: 2px solid black;
-}
-
-.category-item label {
-  color:white;
-  margin-left: 5px;
-}
 

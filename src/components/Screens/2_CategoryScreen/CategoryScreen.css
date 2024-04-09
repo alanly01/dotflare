@@ -28,17 +28,6 @@
   border-radius: 5px !important;
 }
 
-.category-checkbox {
-  width: 30px !important;
-  height: 30px !important;
-  margin-right: 10px;
-  border-color: transparent;
-  accent-color: #BF8DFF !important;
-}
-
-.category-item label {
-  color: white
-}
 
 .category-text {
   color: white;

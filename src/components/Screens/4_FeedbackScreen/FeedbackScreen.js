@@ -19,14 +19,10 @@ function FeedbackScreen({
   setCategoryIndex,
   categories}) {
   
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const handleCheckboxChange = (category) => {
-    setSelectedCategories(prevSelected => {
-      const newSelected = prevSelected.includes(category)
-        ? prevSelected.filter(item => item !== category)
-        : [...prevSelected, category];
-      return newSelected;
-    });
+  const [selectedCategoryIndex, setSelectedCategorIndex] = useState(null);
+  const handleCheckboxChange = (categoryIndex) => {
+    setSelectedCategorIndex(categoryIndex);
+    console.log(categoryIndex);
   };
 
   const onNextClick = async () => {
@@ -99,27 +95,26 @@ function FeedbackScreen({
           </div>
           <div className="categories-list">
             {categories.map((category, index) => (
-                <div key={index} className="category-item">
-                  <input 
-                    type="checkbox" 
-                    className="category-checkbox"
-                    id={`category-${index}`} 
-                    checked={selectedCategories.includes(category)}
-                    onChange={() => handleCheckboxChange(category)}
-                  />
-                  <label htmlFor={`category-${index}`}>{category}</label>
-                </div>
+              <div 
+              key={index} 
+              className="category-item"
+              style={{backgroundColor: selectedCategoryIndex == index ? '#BF8DFF' : '#222222'}}
+              onClick={() => handleCheckboxChange(index)}>
+              <div 
+                className="category-text"
+                style={{fontWeight: selectedCategoryIndex == index ? 'bold' : 'normal'}}>
+                {category}
+              </div>
+              {/* <input 
+                type="checkbox" 
+                className="category-checkbox"
+                checked={selectedCategories.includes(category)}
+                onChange={() => handleCheckboxChange(category)}
+              />
+              <label htmlFor={`category-${index}`}>{category}</label> */}
+            </div>
             ))}
           </div>
-        </div>
-
-        <div className="fb-region">
-          <button type="button" className="submitBut" onClick={() => {
-            {/*BACKEND? Save data on form, navigate to next screen*/}
-            onNextClick();
-          }}>
-            Submit
-          </button>
         </div>
 
         {/* Add back navigation */}
