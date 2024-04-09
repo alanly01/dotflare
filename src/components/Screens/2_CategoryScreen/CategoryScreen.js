@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 import './CategoryScreen.css';
 import NavigationButton from '../../Common/NavigationButton/NavigationButton';
+import { addCategories } from '../../../backend/FirebaseAPICalls/FirebaseAPI';
 
 function CategoryScreen( {navigateToScreen, exitSession} ) {
 
@@ -12,9 +13,81 @@ function CategoryScreen( {navigateToScreen, exitSession} ) {
     navigateToScreen(3, 2)
   }
 
+  const defaultCategories = [
+    'Contrast', 'Typography', 'Color', 'Balance', 'Layout', 'Saturation'
+  ];
+  const [categories, setCategories] = useState(defaultCategories);
+  const [selectedCategories, setSelectedCategories] = useState(() => {
+    const savedCategories = localStorage.getItem('selectedCategories');
+    return savedCategories ? JSON.parse(savedCategories) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('selectedCategories', JSON.stringify(selectedCategories));
+    console.log(selectedCategories.toString())
+  }, [selectedCategories]);
+
+  const [newCategory, setNewCategory] = useState('');
+
+  const handleCheckboxChange = (category) => {
+    setSelectedCategories(prevSelected => {
+      const newSelected = prevSelected.includes(category)
+        ? prevSelected.filter(item => item !== category)
+        : [...prevSelected, category];
+      return newSelected;
+    });
+  };
+
+  const addCategory = () => {
+    if (newCategory) {
+      setCategories([...categories, newCategory]);
+      setNewCategory('');
+    }
+  };
+
+  const handleInputChange = (event) => {
+    setNewCategory(event.target.value);
+  };
+
+  const handleNextClick = async () => {
+    const senderToken = '111111';
+    const receiverToken = '222222';
+    try {
+      const saveSuccess = await addCategories(senderToken, receiverToken, selectedCategories);
+      if (saveSuccess) {
+        console.log('Categories saved successfully');
+        navigateToScreen('ViewImage');
+      } else {
+        console.error('Failed to save categories');
+      }
+    } catch (error) {
+      console.error('Error saving categories:', error);
+    }
+  };
+
   return (
     <div className="temporary-class">
-      <h1>CategoryScreen</h1>
+      <header className="App-header">
+        {/* <p>Add Categories</p> */}
+        <div className="search-container">
+          <input type="text" placeholder="Custom Category" value={newCategory} onChange={handleInputChange} />
+          <button onClick={addCategory}>Add</button>
+        </div>
+
+        <div className="categories-list">
+          {categories.map((category, index) => (
+            <div key={index} className="category-item">
+              <input 
+                type="checkbox" 
+                id={`category-${index}`} 
+                checked={selectedCategories.includes(category)}
+                onChange={() => handleCheckboxChange(category)}
+              />
+              <label htmlFor={`category-${index}`}>{category}</label>
+            </div>
+          ))}
+        </div>
+      </header>
       <NavigationButton backVisibility={true} nextVisibility={true} backText={"Home"} nextText={"Confirm"} backFunction={onBackClick} nextFunction={onNextClick}/>
     </div>
   );
